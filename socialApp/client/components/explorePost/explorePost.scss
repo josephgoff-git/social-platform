@@ -1,0 +1,26 @@
+@import "../../style.scss";
+
+.explorePost {
+    @include themify($themes) {
+        background-color: red;
+        position: fixed;
+        top: 0;
+        z-index: 4;
+        width: 45%;
+        margin-left: 5%;
+        margin-top: 150px;
+        height: 70%;
+        border-radius: 15px;
+    
+        @include tablet{width: 65%;}
+        @include mobile2{width: 78%;}
+        @include mobile1{width: 76%; margin-top: 120px;}
+        @include mobile{width: 70%;}
+        @include mobile400{margin-left: 8%; width: 84%;}
+    
+        .content {
+            // width: 50%;
+            // height: 60%;
+        }
+    }
+}
