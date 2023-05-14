@@ -1,0 +1,97 @@
+$themes: (
+  light: (
+    textColor: #000,
+    bg: white,
+    logo: darkblue,
+    bgSoft: #f6f3f3,
+    textColorSoft: #555,
+    textColorSoft2: #555,
+    border: lightgray,
+    iconColor: #282828,
+    hoverSoft:#e9e9e9,
+    outlineSoft: #282828,
+  ),
+  dark: (
+    textColor: whitesmoke,
+    bg: #222,
+    logo: white,
+    bgSoft: #333,
+    textColorSoft: lightgray,
+    textColorSoft2: #9e9e9e,
+    border: #444,
+    iconColor: whitesmoke,
+    hoverSoft:#333,
+    outlineSoft: #333,
+  ),
+);
+
+@mixin themify($themes) {
+  @each $theme, $map in $themes {
+    .theme-#{$theme} & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}
+
+@mixin mobile400 {
+  @media (max-width: 400px) {
+    @content;
+  }
+}
+
+@mixin mobile500 {
+  @media (max-width: 500px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: 480px) {
+    @content;
+  }
+}
+
+@mixin mobile1 {
+  @media (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin mobile2 {
+  @media (max-width: 700px) {
+    @content;
+  }
+}
+
+@mixin mobile2-reversed {
+  @media (min-width: 700px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 960px) {
+    @content;
+  }
+}
+
+@mixin tablet2 {
+  @media (max-width: 1200px) {
+    @content;
+  }
+}
