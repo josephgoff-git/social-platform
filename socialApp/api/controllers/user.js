@@ -12,6 +12,20 @@ export const getUser = (req,res)=> {
     });
 };
 
+export const getUsers = (req,res)=> {
+    const q = "SELECT * FROM users"
+
+    db.query(q, [], (err,data)=>{
+        if(err) return res.status(500).json(err)
+        const data2 = []
+        for (let i = 0; i < data.length; i++) {
+            const { password, ...info } = data[i]
+            data2.push(info)
+        }
+        return res.json(data2)
+    });
+};
+
 export const updateUser = (req,res)=> {
     const token = req.cookies.accessToken;
     if(!token) return res.status(401).json("Not authenticated!")
@@ -36,3 +50,19 @@ export const updateUser = (req,res)=> {
     });
 };
 
+export const deleteUser = (req,res) => {
+    const token = req.cookies.accessToken;
+    if(!token) return res.status(401).json("Not logged in!")
+
+    jwt.verify(token, "secretkey", (err,userInfo)=> {
+        if(err) return res.status(403).json("Token is invalid!")
+       
+        const q = "DELETE FROM users WHERE `id`=?";
+    
+        db.query(q, [req.params.id], (err,data)=>{
+            if(err) return res.staus(500).json(err)
+            if(data.affectedRows > 0) return res.status(200).json("User has been deleted.");
+            return res.status(403).json("You can only delete your own account")
+        });
+    });
+};

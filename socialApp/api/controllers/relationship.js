@@ -10,6 +10,15 @@ export const getRelationships = (req,res) => {
     });
 };
 
+export const getAllRelationships = (req,res) => {
+    const q = "SELECT * FROM relationships";
+
+    db.query(q, [], (err,data)=>{
+        if(err) return res.staus(500).json(err)
+        return res.status(200).json(data);
+    });
+};
+
 export const addRelationship = (req,res) => {
     const token = req.cookies.accessToken;
     if(!token) return res.status(401).json("Not logged in!")
