@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/authContext";
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { FiChevronRight } from 'react-icons/fi';
-import { useQuery } from "react-query";
+import { QueryClient, useMutation, useQuery } from "react-query";
 import { makeRequest } from "../../axios";
 import { reRendered } from "../messageText/MessageText";
 
@@ -69,6 +69,33 @@ function Dropdown({page, user, isLoading, mainBody, setMainBody}) {
     }
   }
  
+  function handleAlert(item) {
+    if (item.label === "Delete Account") {
+      if (window.confirm(`Delete ${currentUser.username} ${currentUser.name}'s account?`)) {
+        deleteMutation.mutate(currentUser.id);
+        localStorage.clear();
+        window.location.href = "http://localhost:3000/login"
+      } 
+    }
+  }
+
+  const deleteMutation = useMutation(
+    (id) => {
+      return makeRequest.delete("/users/" + id);
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch
+        QueryClient.invalidateQueries(["users"]);
+      },
+    }
+  );
+
+  // const handleDelete = () => {
+  //   window.location.href = "http://localhost:3000/login"
+  //   localStorage.clear();
+  // };
+
   return (
     <div className="dropdown-wrapper" ref={ref}>
       <div className="title">
@@ -80,7 +107,7 @@ function Dropdown({page, user, isLoading, mainBody, setMainBody}) {
           let link = "/";
           let update = false;
           if (page === 1) {
-            if (item.label === "Edit Profile") {
+            if (item.label === "Edit Profile" || item.label === "Change Password") {
               update = true;  
               link = `/profile/${currentUser.id}`
             } 
@@ -126,7 +153,7 @@ function Dropdown({page, user, isLoading, mainBody, setMainBody}) {
               </div>
             </Link>
             ):(
-            <div className="item">
+            <div className="item" onClick={()=>{handleAlert(item)}}>
               <div className="left">
                 <div className="icon">
                   {item.icon}
@@ -140,6 +167,7 @@ function Dropdown({page, user, isLoading, mainBody, setMainBody}) {
                   {item.label === "Private Account" ? item.clicked === false? <AiOutlineCheckCircle fontSize={18}/> : <AiFillCheckCircle fontSize={18}/> : <></>}
                   {item.label === "Show Online Status" ? item.clicked === false? <AiOutlineCheckCircle fontSize={18}/> : <AiFillCheckCircle fontSize={18}/> : <></>}
                   {item.label === "Allow Sharing" ? item.clicked === false? <AiOutlineCheckCircle fontSize={18}/> : <AiFillCheckCircle fontSize={18}/> : <></>}
+                  {item.label === "Delete Account" ? <FiChevronRight fontSize={18}/> : <></>}
               </div> : <></>}
               </div>
             </div>

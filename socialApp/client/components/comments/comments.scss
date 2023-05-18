@@ -22,7 +22,7 @@
         border: 1px solid themed("border");
         background-color: transparent;
         color: themed("textColor");
-        font-size: 14px;
+        font-size: 13px;
         border-radius: 4px;
       }
 
@@ -45,9 +45,9 @@
       .info {
         flex:5;
         display: flex;
-        flex-direction: column;
-        gap: 3px;
-        align-items: flex-start;
+        // flex-direction: column;
+        // align-items: flex-end;
+        
 
         span {
           font-weight: 500;

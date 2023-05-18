@@ -13,9 +13,29 @@ import { FaRegUser } from 'react-icons/fa';
 import Dropdown from "../dropdown/Dropdown";
 import { clickedOutside } from "../dropdown/Dropdown.jsx";
 import { FiSend } from 'react-icons/fi';
+import { GoThreeBars } from 'react-icons/go'
 
+export var fill = "";
+export var searchResultsFill = [];
+export var rendered = false;
+export function reRendered(value) {rendered = value};
+var wasBelow600 = false;
 
-const Navbar = ({mainBody, setMainBody}) => {
+const Navbar = ({mainBody, setMainBody, toggleLeft}) => {
+  
+  useEffect(() => {
+    if (rendered) {
+      fill = "";
+      searchResultsFill = [];
+      reRendered(false)
+    } else {
+      if (fill !== "") {
+        setDesc(fill)
+        setResults(searchResultsFill);
+      }
+    }
+  }, []); 
+
   const { toggle, darkMode } = useContext(DarkModeContext);
   const { currentUser } = useContext(AuthContext);
 
@@ -32,15 +52,30 @@ const Navbar = ({mainBody, setMainBody}) => {
   const button5 = document.getElementById("button5")
   const button6 = document.getElementById("button6")
   const input1 = document.getElementById("input1")
-
+  const input1_input = document.getElementById("input1-input")
+  const hamburger = document.getElementById("hamburger")
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
   useEffect(() => {
     const handleWindowResize = () => {
       setWindowWidth(window.innerWidth);
-      if (windowWidth > 600) { setSearchOpen(false)}
-      setButtons([button1, button2, button3, button4, button5, button6, input1]);
+      if (windowWidth < 600) {wasBelow600 = true};
+      if (windowWidth > 600 && wasBelow600) { 
+        setSearchOpen(false); 
+        fill = "";
+        setDesc(fill)
+        searchResultsFill = [];
+        setResults(searchResultsFill);
+        wasBelow600 = false;
+      }
+      if (windowWidth < 420) {
+        setSearchOpen(false); 
+        fill = "";
+        setDesc(fill)
+        searchResultsFill = [];
+        setResults(searchResultsFill);
+      }
+      setButtons([button1, button2, button3, button4, button5, button6, input1, hamburger]);
     };
 
     window.addEventListener('resize', handleWindowResize);
@@ -50,7 +85,7 @@ const Navbar = ({mainBody, setMainBody}) => {
     };
   });
 
-  const [buttons, setButtons] = useState([button1, button2, button3, button4, button5, button6, input1]);
+  const [buttons, setButtons] = useState([button1, button2, button3, button4, button5, button6, input1, hamburger]);
   const [searchOpen, setSearchOpen] = useState(false);
 
   if (windowWidth <= 600) {
@@ -69,6 +104,7 @@ const Navbar = ({mainBody, setMainBody}) => {
     if (button5 !== null) {searchOpen ? button5.style.pointerEvents = "none" : button5.style.pointerEvents = "all" };
     if (button6 !== null) {searchOpen ? button6.style.pointerEvents = "none" : button6.style.pointerEvents = "all" };
     if (input1 !== null) {searchOpen ? input1.style.pointerEvents = "all" : input1.style.pointerEvents = "none"};
+    if (hamburger !== null) { hamburger.style.display = "block"};
   }
 
   if (windowWidth > 600) {
@@ -79,22 +115,22 @@ const Navbar = ({mainBody, setMainBody}) => {
     if (button5 !== null) {button5.style.opacity = 1; button5.style.pointerEvents = "all"};
     if (button6 !== null) {button6.style.opacity = 1; button6.style.pointerEvents = "all"};
     if (input1 !== null) {input1.style.opacity = 0; input1.style.pointerEvents = "none"};
+    if (hamburger !== null) { hamburger.style.display = "none"};
   }
 
-  if (windowWidth <= 400) {
+  if (windowWidth <= 420) {
     if (button1 !== null) {button1.style.display = "none"};
-
     if (button2 !== null) {button2.style.display = "none"};
     if (button3 !== null) {button3.style.display = "none"};
+    if (input1 !== null) {input1.style.display = "none"}
   }
 
-  if (windowWidth > 400) {
+  if (windowWidth > 420) {
     if (button1 !== null) {button1.style.display = "block"};
-
     if (button2 !== null) {button2.style.display = "block"};
     if (button3 !== null) {button3.style.display = "block"};
+    if (input1 !== null) {input1.style.display = "block"}
   }
-
 
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -117,12 +153,83 @@ const Navbar = ({mainBody, setMainBody}) => {
       }
       
     }
-  }, []);
+  }, [])  
+
+  function handleClick2() {
+    toggleLeft()
+  }
+
+  // Search Bar
+  const [users, setUsers] = useState([]);
+  useQuery(["users"], () =>
+  makeRequest.get("/users/get").then((res) => {
+    setUsers(res.data);
+    return res.data;
+  })
+);
+
+  function handleInputChange(event) {
+    var searchResults = []
+    if (event.target.value === "") {searchResults = []}
+    else {
+      const users2 = users.sort((a, b) => {
+        const firstNameComparison = a.username.localeCompare(b.username);
+        if (firstNameComparison !== 0) {
+          return firstNameComparison;
+        } else {
+          return a.name.localeCompare(b.name);
+        }
+      });
+      for (let i=0;i<users2.length;i++) {
+        var text = users2[i].username + " " + users2[i].name
+        const regex = new RegExp(event.target.value.trim(), 'gi');
+        const matches = text.match(regex);
+        if (matches !== null && users2[i].id !== currentUser.id) {searchResults.push(users2[i])}
+      }
+    }
+    searchResultsFill = searchResults;
+    setResults(searchResults);
+    setDesc(event.target.value)
+  };
+
+  const [desc, setDesc] = useState("")
+  const [results, setResults] = useState([]);
+
+  function handleInputClick() {
+    setDesc("");
+    setResults([]);
+    fill = "";
+    searchResultsFill = [];
+  };
 
   return (
     <div className="navbar" id="nav">
       <div id="input1" className="input">
-        <input type="text" placeholder="Search..." />
+        <div className="top">
+          <input 
+            id="input1-input"
+            type="text" 
+            placeholder="Search..." 
+            onChange={(event)=> {
+              handleInputChange(event)
+              fill = event.target.value
+            }}
+            value={desc}/>
+        </div>
+        <ul>
+          {results.map((result) => (
+            <li key={result.id}  onClick={() => {handleInputClick()}}>
+              <Link
+                className="link"
+                to={`/profile/${result.id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <img src={"/upload/" + result.profilePic} alt="" />
+                <p>{result.username} {result.name}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="dropdown">
@@ -130,7 +237,9 @@ const Navbar = ({mainBody, setMainBody}) => {
       </div>
 
       <div className="nav">
+
         <div className="left">
+          <GoThreeBars onClick={handleClick2} fontSize={25} id="hamburger" style={{display: "block", marginRight: "15px"}}/>
           <Link to="/" style={{ textDecoration: "none" }}>
             <span>lamasocial</span>
           </Link>
@@ -138,8 +247,31 @@ const Navbar = ({mainBody, setMainBody}) => {
 
         <div className="center">
           <div className="search">
-            <SearchOutlinedIcon/>
-            <input type="text" placeholder="Search..." />
+            <div className="top">
+              <SearchOutlinedIcon/>
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                onChange={(event)=> {
+                  handleInputChange(event)
+                  fill = event.target.value
+                }}
+                value={desc}/>
+            </div>
+            <ul>
+              {results.map((result) => (
+                <li key={result.id}  onClick={() => {handleInputClick()}}>
+                  <Link
+                    className="link"
+                    to={`/profile/${result.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <img src={"/upload/" + result.profilePic} alt="" />
+                    <p>{result.username} {result.name}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="appearance" title="Appearance">
             {darkMode ? (
@@ -151,7 +283,18 @@ const Navbar = ({mainBody, setMainBody}) => {
         </div>
 
         <div className="right">
-          <div><SearchOutlinedIcon id="button1" size={23} title="Search" className="small-screen" onClick={()=>{setSearchOpen(!searchOpen); setButtons([button1, button2, button3, button4, button5, button6, input1]); }}/></div>
+          <div>
+            <SearchOutlinedIcon id="button1" size={23} title="Search" className="small-screen" onClick={()=>{
+              if (!searchOpen) {
+                input1_input.focus()
+                fill = "";
+                setDesc(fill)
+                searchResultsFill = [];
+                setResults(searchResultsFill);
+              }
+              setSearchOpen(!searchOpen); 
+              setButtons([button1, button2, button3, button4, button5, button6, input1]); 
+          }}/></div>
           <div>{darkMode ? (
               <WbSunnyOutlinedIcon id="button2" onClick={toggle} title="Appearance" className="small-screen"/>
             ) : (
@@ -166,7 +309,7 @@ const Navbar = ({mainBody, setMainBody}) => {
             >
             <div className="user">
               {isLoading? <img src="" alt="" /> : <img src={"/upload/" + data.profilePic} alt="" />}
-              <span>{currentUser.name}</span>
+              <span>{currentUser.username}</span>
             </div>       
           </Link> 
         </div>

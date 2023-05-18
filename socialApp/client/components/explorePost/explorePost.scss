@@ -2,25 +2,226 @@
 
 .explorePost {
     @include themify($themes) {
-        background-color: red;
+        background-color: themed("bg");
+        border: 1px solid themed("border");
         position: fixed;
         top: 0;
         z-index: 4;
         width: 45%;
         margin-left: 5%;
-        margin-top: 150px;
+        margin-top: 140px;
         height: 70%;
         border-radius: 15px;
+        min-height: 550px;
     
         @include tablet{width: 65%;}
         @include mobile2{width: 78%;}
-        @include mobile1{width: 76%; margin-top: 120px;}
-        @include mobile{width: 70%;}
-        @include mobile400{margin-left: 8%; width: 84%;}
+        @include mobile1{width: 76%; margin-top: 90px;}
+        @include mobile{width: 70%; min-height: 480px}
+        @include mobile400{margin-left: 8%; width: 84%; min-height: 440px}
+
     
         .content {
-            // width: 50%;
-            // height: 60%;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+            
+            .left{
+                display: flex;
+                width: 50%;
+                height: 100%;
+                flex-direction: column;
+                @include mobile1{width: 92%; margin-left: 4%;}
+
+                .top {
+
+                    .link {
+                        width: 50%;
+                        height: 60px;
+                        position: absolute;
+                        display: flex;
+                        align-items: center;
+                        margin-top: 10px;
+
+                        img {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            margin: 10px;
+                            margin-right: 12px;
+                            margin-left: 20px;
+                            flex-shrink: 0;
+                            @include mobile1 {margin-left: 3%;}
+                        }
+
+                        p {
+                            color: themed("textColor");
+                        }
+                    }
+                }
+
+                .img {
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+
+                    .content {
+                        display: flex;
+                        flex-direction: column;
+                        height: auto;
+
+                        img{
+                            margin-left: 3%;
+                            width: 94%;
+                            height: auto;
+                            aspect-ratio: 1/1;
+                            object-fit: cover;
+                            @include mobile1{
+                                // margin-left: 10px;
+                                // width: calc(100%);
+                                margin-top: 15px;
+                            }
+                        }
+
+                        .desc {
+                            display: flex;
+                            flex-direction: row;
+                            margin-top: 13px;
+
+                            * {
+                                color: themed("textColor")
+                            }
+
+                            .heart{ 
+                                padding: 0 15px;
+                                font-size: 40px;
+                                @include tablet{ font-size: 50px;}
+                                @include mobile2{ font-size: 28px; padding-right: 10px;}
+
+                            }
+                            p { 
+                                font-size: 16px;
+                                margin-top: 2px;
+                                margin-right: 10px;
+                                overflow-y: hidden;
+                                text-overflow: ellipsis;
+                                max-height: 40px;
+                            }
+                        }
+
+                    }
+                }   
+            }
+
+            .right {
+                border-left: 1px solid themed("border");
+                width: 50%;
+                height: 100%;
+                @include mobile1{
+                    display: none;
+                }
+
+                .comments {
+                    height: calc(100% - 50px);
+                    margin-top: 10px;
+                    overflow-y: scroll;
+
+                    .commentBox {
+                        padding: 10px 0px;
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 6px;
+                        width: 100%;
+
+                        img {
+                            margin-left: 14px;
+                            margin-right: 5px;
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            flex-shrink: 0;
+                        }
+
+                        .info {
+                            flex:5;
+                            display: flex;  
+                            align-items: center;
+                            gap: 13px; 
+                
+                            span {
+                            color:themed("textColor");
+                            font-size: 12px;
+                            font-weight: 500;
+                            width:min-content;
+                            }
+                    
+                            p{
+                                color:themed("textColorSoft");
+                                font-size: 12px;
+                                white-space: nowrap; 
+                                overflow-x: hidden;
+                                text-overflow: ellipsis;
+                                max-width: fit-content;
+                            }
+                        }
+                    
+                        .date{
+                            flex:1;
+                            align-self: center;
+                            color:themed("textColorSoft2");
+                            font-size: 12px;
+                        }
+                    }
+                }
+
+                .addComment {
+                    position: absolute;
+                    bottom: 0;
+                    width: 50%;
+                    height: 40px;
+                    border-top: 1px solid themed("border");
+                    display: flex;
+                    align-items: center;
+
+                    input {
+                        margin-top: -5px;
+                        outline: none;
+                        width: 85%;
+                        margin-left: 3%;
+                        border: none;
+                        background-color: transparent;
+                        color: themed("textColor");
+                        font-size: 14px;
+                    }
+
+                    input::placeholder {
+                        color: themed("textColor");
+                        opacity: 0.8;
+                      }
+
+                    button {
+                        margin-top: -5px;
+                        width: 10%;
+                        border: none;
+                        cursor: pointer;
+                        margin-right: 2%;
+                        background-color: transparent;
+
+                        &:hover {
+                            opacity: 0.7;
+                        }
+
+                        * {
+                            margin-top: 5px;
+                            color: themed("textColor");
+                        }
+                     
+                    }
+                }
+            }
         }
     }
 }

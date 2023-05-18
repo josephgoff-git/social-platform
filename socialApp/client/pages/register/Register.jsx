@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./register.scss";
 import axios from "axios";
+import { AuthContext } from "../../context/authContext";
 
 const Register = () => {
   
@@ -14,32 +15,37 @@ const Register = () => {
   const [err, setErr] = useState(null);
 
   const handleChange = (e) => {
-    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value.trim() }));
   };
+
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate()
 
   const handleClick = async (e) => {
     e.preventDefault();
-
-    try {
-      await axios.post("http://localhost:8800/api/auth/register", inputs);
-    } catch (err) {
-      setErr(err.response.data);
+    if (inputs.username !== "" && inputs.name !== "" && inputs.email !== "" && inputs.password !== "") {
+      try {
+        await axios.post("http://localhost:8800/api/auth/register", inputs);
+        try {
+          await login(inputs);
+          navigate("/")
+        } catch (err) {
+          setErr(err.response.data);
+        }
+      } catch (err) {
+        setErr(err.response.data);
+      }
+    } else {
+      setErr("All inputs are required!");
     }
   };
-
-  console.log(err)
 
   return (
     <div className="register">
       <div className="card">
         <div className="left">
-          <h1>Lama Social.</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero cum,
-            alias totam numquam ipsa exercitationem dignissimos, error nam,
-            consequatur.
-          </p>
-          <span>Do you have an account?</span>
+          <h1>Welcome</h1>
+          <span>Already have account?</span>
           <Link to="/login">
           <button>Login</button>
           </Link>
@@ -47,13 +53,17 @@ const Register = () => {
         <div className="right">
           <h1>Register</h1>
           <form>
-            <input type="text" placeholder="Username" name="username" onChange={handleChange}/>
+            <input type="text" placeholder="First Name" name="username" onChange={handleChange}/>
+            <input type="text" placeholder="Last Name" name="name" onChange={handleChange}/>
             <input type="email" placeholder="Email" name="email" onChange={handleChange}/>
             <input type="password" placeholder="Password" name="password" onChange={handleChange}/>
-            <input type="text" placeholder="Name" name="name" onChange={handleChange}/>
-            {err && err}
+            <div style={{color: "#AAAAAA", fontSize: "14px"}}>{err && err}</div>
             <button onClick={handleClick}>Register</button>
           </form>
+
+          <Link to="/login" style={{textDecoration: "none"}}>
+              <p>Login</p>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import "./rightBar.scss";
 import { makeRequest } from "../../axios";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 
 
@@ -14,6 +14,18 @@ const RightBar = () => {
       return res.data;
   })
   )
+
+  // const [users, setUsers] = useState([]);
+
+  // const { data: usersData } = useQuery(["users"], () =>
+  //   makeRequest.get("/users/get").then((res) => res.data)
+  // );
+
+  // useEffect(() => {
+  //   if (usersData) {
+  //     setUsers(usersData);
+  //   }
+  // }, [usersData]);
 
 
   return (

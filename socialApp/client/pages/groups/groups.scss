@@ -2,9 +2,105 @@
 
 .groups {
   @include themify($themes) {
-    padding: 20px 70px;
     background-color: themed("bgSoft");
     min-height: calc(100vh - 110px);
-    color: themed("textColor")
+    width: 100%;
+    height: 100%;
+    
+    .title {
+      font-weight: Bold;
+      font-size: 28px;
+      color: themed("textColor");
+      padding: 25px 6% 0 6%;
+    }
+
+    .container {
+      margin: 14px 6% 40px 6%;
+      width: 88%;
+      height: auto;
+    
+
+      .group {
+        position: relative;
+        margin-bottom: 15px;
+        height: 60px;
+        width: 100%;
+        border-radius: 12px;
+        object-fit: contain;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &:hover {
+          border: 1px solid themed("textColor");
+        }
+        
+        img {
+          filter: brightness(0.4);
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 12px;
+        }
+
+        .p1 {
+          font-weight: 600;
+          position: absolute;
+          color: white;
+          font-size: 1.5rem;
+        }
+
+        .p2 {
+          position: absolute;
+          right: 16px;
+          width: 35px;
+          height: 35px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 10px;
+          background-color: themed("bgSoft");
+          color: themed("textColorSoft");
+          font-size: 1rem;
+          font-weight: 600;
+        }
+      }
+
+
+      .plusDiv {
+        height: 50px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .plus {
+          color: themed("textColor");
+          font-weight: bold;
+          font-size: 40px;
+          height: 35px;
+          width: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: transparent;
+          border-radius: 50%;
+          cursor: pointer;
+          margin-top: 2px;
+          background-color: themed("bg");
+
+          &:hover > p {
+            color: themed("textColorSoft2");
+          }
+
+          p {
+            color: themed("textColorSoft");
+            margin-top: -3px;
+            margin-left: -0.5px;
+            font-weight: 400;
+          }
+        }
+
+      }
+    }
   }
 }

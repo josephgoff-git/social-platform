@@ -1,85 +1,133 @@
 .register {
   height: 100vh;
-  background-color: rgb(193, 190, 255);
+  background: linear-gradient(rgba(12, 192, 223, 0.6), rgba(255, 222, 89, 0.75));
   display: flex;
   align-items: center;
   justify-content: center;
 
   .card {
     width: 50%;
-    display: flex;
-    flex-direction: row-reverse;
     background-color: white;
     border-radius: 10px;
-    min-height: 600px;
-    overflow: hidden;
+    max-height: 600px;
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    filter: brightness(1);
+    border: 1px solid white;
+    min-width: 400px;
+    @media (max-width: 500px) {min-width: 0; width: 70%;}
 
     .left {
-      flex: 1;
-      background: linear-gradient(rgba(39, 11, 96, 0.5), rgba(39, 11, 96, 0.5)),
-        url("https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600")
-          center;
+      width: 50%;
+      overflow-x: hidden;
+      max-width: 50%;
+      background: linear-gradient(#0cc0df, #ffde59), center;
       background-size: cover;
       padding: 50px;
+      padding-left: 50px;
+
+      padding-top: 30px;
       display: flex;
       flex-direction: column;
       gap: 30px;
       color: white;
-
-      h1 {
-        font-size: 100px;
-        line-height: 100px;
-      }
-      
-      p {
-      }
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      position: relative;
+      @media (max-width: 1200px) {padding-left: 8%;}
+      @media (max-width: 500px) {display: none;}
 
       span {
         font-size: 14px;
+        position: absolute;
+        left: 50;
+        bottom: 92px;
+        width: 170px;
       }
       
       button {
-        width: 50%;
+        width: 35%;
+        min-width: 80px;
         padding: 10px;
         border: none;
         background-color: white;
-        color: rebeccapurple;
+        color: #BBd585;
         font-weight: bold;
         cursor: pointer;
+        font-size: 0.8rem;
+        border-radius: 7px;
+        position: absolute;
+        left: 0;
+        margin-left: 50px;
+        bottom: 40px;
+        @media (max-width: 1200px) {margin-left: 16%;}
+
       }
     }
 
     .right {
-      flex: 1;
+      width: 50%;
+      max-width: 50%;
+      overflow-x: hidden;
       padding: 50px;
+      padding-top: 30px;
+      padding-bottom: 40px;
       display: flex;
       flex-direction: column;
-      gap: 50px;
       justify-content: center;
+      @media (max-width: 1200px) {padding-left: 8%;}
+      @media (max-width: 500px) {padding-left: 11%;}
 
       h1 {
-      color: #555;
+        color: #555;
+        margin-bottom: 23px;
       }
       
       form {
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 16px;
         
         input {
         border: none;
         border-bottom: 1px solid lightgray;
-        padding: 20px 10px;
+        padding: 8.5px 4px;
+        font-size: 0.8rem;
+        outline: none;
         }
         
         button {
-          width: 50%;
+          margin-top: 10px;
+          width: 40%;
+          font-size: 0.8rem;
           padding: 10px;
           border: none;
-          background-color: #938eef;
+          background-color: #0cc0df;
+          opacity: 0.7;
+          border-radius: 7px;
           color: white;
           font-weight: bold;
           cursor: pointer;
+          min-width: 70px;
+        }
+      }
+
+      p {
+        width: min-content;
+        white-space: nowrap;
+        text-decoration: none;
+        color: #AAAAAA;
+        font-size: 14px;
+        display: none;
+        pointer-events: none;
+        padding-bottom: 1px;
+        border-bottom: 1px solid #BBBBBB;
+        margin-top: 21px;
+        padding-right: 0;
+        @media (max-width: 500px) {
+          display: block;
+          pointer-events: all;
         }
       }
     }

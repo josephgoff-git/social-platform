@@ -5,7 +5,7 @@ import "./login.scss";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [err, setErr] = useState(null);
@@ -13,7 +13,7 @@ const Login = () => {
   const navigate = useNavigate()
 
   const handleChange = (e) => {
-    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value.trim() }));
   };
   const { login } = useContext(AuthContext);
 
@@ -31,13 +31,11 @@ const Login = () => {
     <div className="login">
       <div className="card">
         <div className="left">
-          <h1>Hello World.</h1>
+          <h1>Welcome</h1>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero cum,
-            alias totam numquam ipsa exercitationem dignissimos, error nam,
-            consequatur.
+            
           </p>
-          <span>Don't you have an account?</span>
+          <span>Don't have an account?</span>
           <Link to="/register">
             <button>Register</button>
           </Link>
@@ -47,19 +45,25 @@ const Login = () => {
           <form>
             <input
               type="text"
-              placeholder="Username"
-              name="username"
+              placeholder="Email"
+              name="email"
+              autocomplete="off"
               onChange={handleChange}
             />
             <input
               type="password"
               placeholder="Password"
               name="password"
+              autocomplete="new-password"
               onChange={handleChange}
             />
-            {err && err}
+            <div style={{color: "#AAAAAA", fontSize: "14px"}}>{err && err}</div>
             <button onClick={handleLogin}>Login</button>
           </form>
+
+          <Link to="/register" style={{textDecoration: "none"}}>
+              <p>Create Account</p>
+          </Link>
         </div>
       </div>
     </div>

@@ -32,7 +32,6 @@
 
           textarea {
             outline: none;
-            background-color: transparent;
             height: 25px;
             font-size: 16px;
             width: 92%;
@@ -40,10 +39,12 @@
             border: none;
             color: themed("textColor");
             margin-right: 4%;
-            margin-left: 4%;
+            margin-left: calc(7px + 1%);
+            background-color: transparent;
           }
   
           textarea::placeholder {
+            width: 100%;
             color: themed("textColor");
             opacity: 0.8;
           }

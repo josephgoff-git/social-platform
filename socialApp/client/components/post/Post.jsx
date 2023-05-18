@@ -59,25 +59,18 @@ const Post = ({ post }) => {
     deleteMutation.mutate(post.id);
   };
 
-  // Added
-  const { isLoading: pLoading, data: profileData } = useQuery(["user"], () =>
-    makeRequest.get("/users/find/" + currentUser.id).then((res)=> {
-      return res.data;
-    })
-  )
-
   return (
     <div className="post">
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            {pLoading? <img src="" alt="" /> : <img src={"/upload/" + profileData.profilePic} alt="" />}
+              <img src={"/upload/" + post.profilePic} alt="" />
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <span className="name">{post.name}</span>
+                <span className="name">{post.username} {post.name}</span>
               </Link>
               <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
@@ -88,8 +81,8 @@ const Post = ({ post }) => {
           )}
         </div>
         <div className="content">
+          {post.img? <img src={"/upload/" + post.img} alt="" /> : <img alt="" src="" style={{display: "none"}}/>}
           <p>{post.desc}</p>
-          <img src={"/upload/" + post.img} alt="" />
         </div>
         <div className="info">
           <div className="item">

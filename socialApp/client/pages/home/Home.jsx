@@ -12,7 +12,7 @@ const Home = () => {
 
   return (
     <div className="home">
-      <Stories/>
+      {/* <Stories/> */}
       <Share/>
       <Posts/>
     </div>

@@ -16,6 +16,8 @@ export function reRendered(value) {
 
 const Share = () => {
 
+  const { currentUser } = useContext(AuthContext);
+  
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
 
@@ -41,7 +43,9 @@ const Share = () => {
       setWindowWidth(window.innerWidth);
       setTitles([addImage, location, tags])
     };
-
+    var textarea = document.getElementById("textarea");
+    if (window.innerWidth < 500 && file) {textarea.placeholder = "Write here..."}
+    else {textarea.placeholder = `What's on your mind ${currentUser.username}?`}
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
@@ -66,8 +70,6 @@ const Share = () => {
       console.log(err);
     }
   };
-
-  const { currentUser } = useContext(AuthContext);
 
   const queryClient = useQueryClient();
 
@@ -131,12 +133,12 @@ const Share = () => {
           {pLoading? <img src="" alt="" /> : <img src={"/upload/" + profileData.profilePic} alt="" />}
              <textarea 
               id="textarea" 
-              placeholder={`What's on your mind ${currentUser.name}?`}
+              placeholder={`What's on your mind ${currentUser.username}?`}
               onChange={(e)=>{
                 textarea_height(); 
                 fill=e.target.value
                 setDesc(e.target.value)}}
-                value={desc}
+              value={desc}
             ></textarea>
           </div>
           <div className="right" id="topRight">

@@ -48,7 +48,7 @@ const Comments = ({ postId }) => {
         {pLoading? <></> : <img src={"/upload/" + profileData.profilePic} alt="" /> }
         <input
           type="text"
-          placeholder="write a comment"
+          placeholder="Write a comment..."
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
         />

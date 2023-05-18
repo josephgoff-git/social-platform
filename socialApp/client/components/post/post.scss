@@ -10,7 +10,6 @@
     color: themed("textColor");
 
     .container {
-      padding: 20px;
 
       .user {
         display: flex;
@@ -61,13 +60,12 @@
       }
 
       .content {
-        margin: 20px 0px;
 
         img {
           width: 100%;
           max-height: 500px;
           object-fit: cover;
-          margin-top: 20px;
+          margin-bottom: 10px;
         }
       }
 

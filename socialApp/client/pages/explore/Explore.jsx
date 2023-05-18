@@ -7,7 +7,28 @@ import { AuthContext } from '../../context/authContext';
 import {BsFillSuitHeartFill} from 'react-icons/bs';
 import { FaComment } from 'react-icons/fa';
 
+export var fill = "";
+export var wasOpen = false;
+// export var rendered = false;
+// export function reRendered(value) {
+//   rendered = value
+// };
+
 const Explore = () => {
+
+  // useEffect(() => {
+  //   if (rendered) {
+  //     fill = "";
+  //     reRendered(false)
+  //     wasOpen = false;
+  //   } else {
+  //     if (wasOpen) {
+  //       handleBoxClick()
+  //       // setPopupOpen(true)
+  //     }
+  //   }
+  // }, []); 
+
   const { currentUser } = useContext(AuthContext);
 
   // Display image
@@ -49,6 +70,7 @@ const Explore = () => {
     const grid = document.getElementById("grid")
     const boxes = document.getElementsByClassName("box");
     if (popupOpen) {
+      wasOpen = false;
       grid.style.webkitFilter = "brightness(100%)";
       grid.style.filter = "brightness(100%)";
       Array.from(boxes).forEach((box) => {
@@ -56,6 +78,7 @@ const Explore = () => {
         box.style.pointerEvents = "all";
       });
     } else {
+      wasOpen = true;
       grid.style.webkitFilter = "brightness(50%)";
       grid.style.filter = "brightness(50%)";
       Array.from(boxes).forEach((box) => {
@@ -67,6 +90,11 @@ const Explore = () => {
 
   return (
     <div className="explore">
+
+      <div className="title">
+        Explore
+      </div>
+
       <div className="grid" id="grid">
         {[...Array(81)].map((_, index) => (
           <div

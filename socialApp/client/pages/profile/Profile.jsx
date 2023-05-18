@@ -6,8 +6,6 @@ import PinterestIcon from "@mui/icons-material/Pinterest";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import PlaceIcon from "@mui/icons-material/Place";
 import LanguageIcon from "@mui/icons-material/Language";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts"
 import { useQuery, useMutation, useQueryClient} from 'react-query'
 import { makeRequest } from "../../axios";
@@ -23,13 +21,13 @@ const Profile = () => {
   const location = useLocation()
   const userId = parseInt(location.pathname.split("/")[2])
 
-  const { isLoading, error, data } = useQuery(["user"], () =>
+  const { isLoading: userLoading, data: userData } = useQuery(["users", userId], () =>
     makeRequest.get("/users/find/" + userId).then((res)=> {
       return res.data;
     })
   )
 
-  const { isLoading: rIsLoading, data: relationshipData } = useQuery(["relationship"], () =>
+  const { isLoading: rIsLoading, data: relationshipData } = useQuery(["relationship", userId], () =>
   makeRequest.get("/relationships?followedUserId=" + userId).then((res)=> {
     return res.data;
   })
@@ -70,16 +68,16 @@ const queryClient = useQueryClient();
 
   return (
     <div className="profile">
-      {isLoading 
-      ? "loading..." 
+      {userLoading || rIsLoading 
+      ? "" 
       : ( <> <div className="images">
         <img
-          src={"/upload/" + data.coverPic}
+          src={"/upload/" + userData.coverPic}
           alt=""
           className="cover"
         />
         <img
-          src={"/upload/" + data.profilePic}
+          src={"/upload/" + userData.profilePic}
           alt=""
           className="profilePic"
         />
@@ -88,7 +86,7 @@ const queryClient = useQueryClient();
         <div className="uInfo">
           
           <div className="top">
-            <span>{data.name}</span>
+            <span>{userData.username} {userData.name}</span>
           </div>
           
           <div className="middle">
@@ -96,13 +94,13 @@ const queryClient = useQueryClient();
               <div className="city">
                 <div className="city-div">
                   <PlaceIcon />
-                  <span>{data.city}</span>
+                  <span>{userData.city}</span>
                 </div>
               </div>
               <div className="website">
                 <div className="website-div">
                   <LanguageIcon />
-                  <span>{data.website}</span>
+                  <span>{userData.website}</span>
                 </div>
               </div>
             </div>
@@ -141,7 +139,7 @@ const queryClient = useQueryClient();
         </div>
       <Posts userId={userId}/>
       </div></>)}
-      {isLoading? <></> : <div>{openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data}/>}</div>}
+      {userLoading? <></> : <div>{openUpdate && <Update setOpenUpdate={setOpenUpdate} user={userData}/>}</div>}
     </div>
   );
 };

@@ -14,10 +14,10 @@ import { GoDashboard } from 'react-icons/go';
 import { MdEventAvailable } from 'react-icons/md';
 import { GiShoppingBag } from 'react-icons/gi';
 import { MdOutlineChat } from 'react-icons/md';
-
 import { useState, useEffect } from 'react';
 
-const LeftBar = () => {
+
+const LeftBar = ({leftOpen, setLeftOpen}) => {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -25,6 +25,8 @@ const LeftBar = () => {
     const handleWindowResize = () => {
       setWindowWidth(window.innerWidth);
       setTitles([profile, home, explore, saved, friends, groups, events, market, activity, settings, logout])
+      if (window.innerWidth > 600) {setLeftOpen(true)} 
+      else {setLeftOpen(false)}
     };
 
     window.addEventListener('resize', handleWindowResize);
@@ -59,10 +61,21 @@ const LeftBar = () => {
   )
 
 
+  const handleAlert = () => {
+    if (window.confirm(`Logout as ${currentUser.username} ${currentUser.name}?`)) {
+      localStorage.clear();
+      window.location.href = "http://localhost:3000/login"
+    //  await axios.post("http://localhost:8800/api/auth/logout");
+    } 
+  }
+
   return (
+    <div>
+    {leftOpen? (
     <div className="leftBar">
       {/* Irrelevant line to enact screen width */}
       {windowWidth < 700 ? <div/> : <div/> }
+
       <div className="container">
         <div className="menu">
           <Link
@@ -71,7 +84,7 @@ const LeftBar = () => {
           >
             <div className="item" title={profile}>
               {pLoading? <img src="" alt="" /> : <img src={"/upload/" + profileData.profilePic} alt="" />}
-              <span>{currentUser.name}</span>
+              <span>{currentUser.username}</span>
             </div>       
           </Link>   
           <Link
@@ -153,7 +166,7 @@ const LeftBar = () => {
           >
             <div className="item" title={activity}>
               <GoDashboard size={24} color="white"/>
-              <span>Your Activity</span>
+              <span>Activity</span>
             </div>
           </Link> 
           <Link
@@ -169,7 +182,7 @@ const LeftBar = () => {
             to="/"
             style={{ textDecoration: "none", color: "inherit" }}
           >
-            <div className="item" title={logout}>
+            <div onClick={handleAlert} className="item" title={logout}>
               <IoPersonCircle size={24} color="white"/>
               <span>Logout</span>
             </div>
@@ -177,6 +190,7 @@ const LeftBar = () => {
 
         </div>
       </div>
+    </div>  ) : <></>}
     </div>
   );
 };
