@@ -23,7 +23,7 @@
       .group {
         position: relative;
         margin-bottom: 15px;
-        height: 60px;
+        height: 80px;
         width: 100%;
         border-radius: 12px;
         object-fit: contain;
@@ -31,22 +31,26 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        background-color: themed("bg");
         &:hover {
           border: 1px solid themed("textColor");
         }
         
         img {
-          filter: brightness(0.4);
-          width: 100%;
-          height: 100%;
+          position: absolute;
+          height: 60px;
+          width: 60px;
+          left: 16px;
           object-fit: cover;
-          border-radius: 12px;
+          border-radius: 50%;
+          filter: brightness(0.9);
+          border: 1px solid white;
         }
 
         .p1 {
           font-weight: 600;
           position: absolute;
-          color: white;
+          color: themed("textColor");
           font-size: 1.5rem;
         }
 

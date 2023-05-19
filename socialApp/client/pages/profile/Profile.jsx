@@ -27,7 +27,7 @@ const Profile = () => {
     })
   )
 
-  const { isLoading: rIsLoading, data: relationshipData } = useQuery(["relationship", userId], () =>
+  const { isLoading: rIsLoading, data: relationshipData } = useQuery(["relationships", userId], () =>
   makeRequest.get("/relationships?followedUserId=" + userId).then((res)=> {
     return res.data;
   })
@@ -44,7 +44,7 @@ const queryClient = useQueryClient();
     {
       onSuccess: () => {
         // Invalidate and refetch
-        queryClient.invalidateQueries(["relationship"]);
+        queryClient.invalidateQueries(["relationships"]);
       },
     }
   );

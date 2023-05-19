@@ -10,7 +10,7 @@
     overflow: scroll;
     background-color: themed("bg");
     color: themed("textColor");
-    min-width: 160px;
+    min-width: 170px;
 
     @include tablet{
       min-width: 140px;

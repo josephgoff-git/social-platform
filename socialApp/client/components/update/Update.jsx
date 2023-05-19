@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { makeRequest } from "../../axios";
 import "./update.scss";
 import { useMutation, useQueryClient } from "react-query";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { AuthContext } from "../../context/authContext";
 
 const Update = ({ setOpenUpdate, user }) => {
   const [cover, setCover] = useState(null);
@@ -10,7 +11,8 @@ const Update = ({ setOpenUpdate, user }) => {
   const [texts, setTexts] = useState({
     email: user.email,
     password: user.password,
-    name: user.name,    
+    username: user.username,
+    name: user.name,  
     city: user.city,
     website: user.website,
   });
@@ -28,9 +30,10 @@ const Update = ({ setOpenUpdate, user }) => {
   };
 
   const handleChange = (e) => {
-    setTexts((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
+    setTexts((prev) => ({ ...prev, [e.target.name]: e.target.value}));
   };
 
+  const { currentUser, updateUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
@@ -40,12 +43,13 @@ const Update = ({ setOpenUpdate, user }) => {
     {
       onSuccess: () => {
         // Invalidate and refetch
-        queryClient.invalidateQueries(["user"]);
+        queryClient.invalidateQueries(["users"]);
+        updateUser({ ...currentUser, ...texts });
       },
     }
   );
 
-  const handleClick = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     let coverUrl;
@@ -58,13 +62,25 @@ const Update = ({ setOpenUpdate, user }) => {
     setCover(null);
     setProfile(null);
 
+    return false;
   };
+
+  const handleCoverChange = (e) => {
+    e.preventDefault(); // Prevent default form submission for cover input
+    setCover(e.target.files[0]);
+  };
+  
+  const handleProfileChange = (e) => {
+    e.preventDefault(); // Prevent default form submission for profile input
+    setProfile(e.target.files[0]);
+  };
+  
 
   return (
     <div className="update">
       <div className="wrapper">
         <h1>Your Profile</h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="files">
             <label htmlFor="cover">
               <span>Cover Picture</span>
@@ -84,7 +100,7 @@ const Update = ({ setOpenUpdate, user }) => {
               type="file"
               id="cover"
               style={{ display: "none" }}
-              onChange={(e) => setCover(e.target.files[0])}
+              onChange={handleCoverChange}
             />
             <label htmlFor="profile">
               <span>Profile Picture</span>
@@ -104,8 +120,28 @@ const Update = ({ setOpenUpdate, user }) => {
               type="file"
               id="profile"
               style={{ display: "none" }}
-              onChange={(e) => setProfile(e.target.files[0])}
+              onChange={handleProfileChange}
             />
+          </div>
+          <div className="name">
+            <div className="name1">
+              <label>First Name</label>
+              <input
+                type="text"
+                value={texts.username}
+                name="username"
+                onChange={handleChange}
+              />
+            </div>
+            <div className="name2">
+              <label>Last Name</label>
+              <input
+                type="text"
+                value={texts.name}
+                name="name"
+                onChange={handleChange}
+              />
+            </div>
           </div>
           <label>Email</label>
           <input
@@ -119,13 +155,6 @@ const Update = ({ setOpenUpdate, user }) => {
             type="text"
             value={texts.password}
             name="password"
-            onChange={handleChange}
-          />
-          <label>Name</label>
-          <input
-            type="text"
-            value={texts.name}
-            name="name"
             onChange={handleChange}
           />
           <label>Country / City</label>
@@ -142,10 +171,10 @@ const Update = ({ setOpenUpdate, user }) => {
             value={texts.website}
             onChange={handleChange}
           />
-          <button onClick={handleClick}>Update</button>
+          <button type="submit">Update</button>
         </form>
         <button className="close" onClick={() => setOpenUpdate(false)}>
-          Done
+          Close
         </button>
       </div>
     </div>

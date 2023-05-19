@@ -97,13 +97,17 @@
           user-select: none;
         }
 
-        img:hover {
+        &:hover > img{
           -webkit-filter: brightness(50%);
           -webkit-transition: all 0.3s ease;
           -moz-transition: all 0.3s ease;
           -o-transition: all 0.3s ease;
           -ms-transition: all 0.3s ease;
           transition: all 0.3s ease;
+        }
+
+        &:hover > .bottom > .p {
+          opacity: 0.7;
         }
 
         .bottom {

@@ -47,14 +47,14 @@ const Login = () => {
               type="text"
               placeholder="Email"
               name="email"
-              autocomplete="off"
+              autoComplete="off"
               onChange={handleChange}
             />
             <input
               type="password"
               placeholder="Password"
               name="password"
-              autocomplete="new-password"
+              autoComplete="new-password"
               onChange={handleChange}
             />
             <div style={{color: "#AAAAAA", fontSize: "14px"}}>{err && err}</div>
