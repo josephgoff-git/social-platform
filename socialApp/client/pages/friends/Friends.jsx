@@ -4,8 +4,9 @@ import { makeRequest } from "../../axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { Link } from "react-router-dom";
-
+ 
 const Friends = () => {
+
   const { currentUser } = useContext(AuthContext);
 
   const [followerIds, setFollowerIds] = useState([]);

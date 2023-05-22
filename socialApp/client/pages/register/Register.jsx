@@ -3,8 +3,9 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./register.scss";
 import axios from "axios";
 import { AuthContext } from "../../context/authContext";
+import moment from "moment";
 
-const Register = () => {
+const Register = ({addActivity}) => {
   
   const [inputs, setInputs] = useState({
     username: "",
@@ -28,6 +29,7 @@ const Register = () => {
         await axios.post("http://localhost:8800/api/auth/register", inputs);
         try {
           await login(inputs);
+          addActivity({label: "Successfully registered", moment: moment(), link: "/activity"})
           navigate("/")
         } catch (err) {
           setErr(err.response.data);

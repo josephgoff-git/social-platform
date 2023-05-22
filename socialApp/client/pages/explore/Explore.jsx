@@ -9,34 +9,21 @@ import { FaComment } from 'react-icons/fa';
 
 export var fill = "";
 export var wasOpen = false;
-// export var rendered = false;
-// export function reRendered(value) {
-//   rendered = value
-// };
 
-const Explore = () => {
+const Explore = ({userId, addActivity}) => {
 
-  // useEffect(() => {
-  //   if (rendered) {
-  //     fill = "";
-  //     reRendered(false)
-  //     wasOpen = false;
-  //   } else {
-  //     if (wasOpen) {
-  //       handleBoxClick()
-  //       // setPopupOpen(true)
-  //     }
-  //   }
-  // }, []); 
+  useEffect(() => {
+    window.scrollTo(0,0);
+  }, []); 
 
   const { currentUser } = useContext(AuthContext);
 
-  // Display image
-  const { isLoading: pLoading, data: profileData } = useQuery(["user"], () =>
-    makeRequest.get("/users/find/" + currentUser.id).then((res)=> {
-      return res.data;
+  const { isLoading: postsLoading, error: postsError, data: postsData } = useQuery(["posts", userId], () =>
+    makeRequest.get("/posts?userId=" + userId).then((res) => {
+      const filteredPosts = res.data.filter(post => post.userId !== currentUser.id && post.img !== "");
+      return filteredPosts;
     })
-  )
+  );
 
   const [popupOpen, setPopupOpen] = useState(false);
   const wrapperRef = useRef(null);
@@ -50,8 +37,8 @@ const Explore = () => {
         setPopupOpen(false);
         const grid = document.getElementById("grid")
         grid.style.filter = "brightness(100%)";
-        const boxes = document.getElementsByClassName("box");
-        Array.from(boxes).forEach((box) => {
+        const boxes = document.querySelectorAll(".box");
+        boxes.forEach((box) => {
           box.style.cursor = "pointer";
           box.style.pointerEvents = "all";
         });
@@ -65,15 +52,17 @@ const Explore = () => {
     };
   }, []);
 
+  const [post, setPost] = useState(null);
+
   const handleBoxClick = () => {
     setPopupOpen(!popupOpen);
     const grid = document.getElementById("grid")
-    const boxes = document.getElementsByClassName("box");
+    const boxes = document.querySelectorAll(".box");
     if (popupOpen) {
       wasOpen = false;
       grid.style.webkitFilter = "brightness(100%)";
       grid.style.filter = "brightness(100%)";
-      Array.from(boxes).forEach((box) => {
+      boxes.forEach((box) => {
         box.style.cursor = "pointer";
         box.style.pointerEvents = "all";
       });
@@ -81,12 +70,24 @@ const Explore = () => {
       wasOpen = true;
       grid.style.webkitFilter = "brightness(50%)";
       grid.style.filter = "brightness(50%)";
-      Array.from(boxes).forEach((box) => {
+      boxes.forEach((box) => {
         box.style.cursor = "auto";
         box.style.pointerEvents = "none";
       });
     }
   };
+
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  if (postsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (postsError) {
+    return <div>Error loading posts.</div>;
+  }
 
   return (
     <div className="explore">
@@ -96,34 +97,45 @@ const Explore = () => {
       </div>
 
       <div className="grid" id="grid">
-        {[...Array(81)].map((_, index) => (
+      {postsData.length === 0 
+        ? <></> : 
+          postsData.map((post) => { 
+
+          var likeNum = getRandomNumber(70,230)
+          var commentNum = getRandomNumber(3,14)
+
+          return (
           <div
-            key={index}
+            key={post.id}
             className="box bin"
             id="box"
             onClick={(event) => {
               event.stopPropagation();
               handleBoxClick();
+              setPost(post);
             }}
           >
-            {pLoading ? (
-              <></>
-            ) : (
-              <img src={"/upload/" + profileData.profilePic} alt="" />
-            )}
+            <img 
+              src={"/upload/" + post.img} 
+              alt="" 
+              loading="lazy"
+              />
+            
             <div className="p">
               <BsFillSuitHeartFill style={{marginTop: "4.3px", fontSize: "17px"}}/> 
-              <p> 203    </p>
+              <p> {likeNum}    </p>
               <FaComment style={{marginTop: "3px"}}/> 
-              <p> 10</p>
+              <p> {commentNum}</p>
             </div>
           </div>
-        ))}
+          )})
+        }
+        
       </div>
 
       {popupOpen ? (
         <div ref={wrapperRef}>
-          <ExplorePost />
+          <ExplorePost post={post} addActivity={addActivity}/>
         </div>
       ) : null}
     </div>

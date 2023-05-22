@@ -8,8 +8,13 @@ import MarketPage6 from "../../assets/market6.jpeg";
 import MarketPage7 from "../../assets/market7.jpeg";
 import MarketPage8 from "../../assets/market8.jpeg";
 import MarketPage9 from "../../assets/market9.jpeg";
+import { useEffect } from "react";
 
 const Market = () => {
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[]);
 
   return (
     <div className="market">

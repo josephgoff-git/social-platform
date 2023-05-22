@@ -4,8 +4,9 @@ import "./update.scss";
 import { useMutation, useQueryClient } from "react-query";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AuthContext } from "../../context/authContext";
+import moment from "moment";
 
-const Update = ({ setOpenUpdate, user }) => {
+const Update = ({ setOpenUpdate, user, addActivity }) => {
   const [cover, setCover] = useState(null);
   const [profile, setProfile] = useState(null);
   const [texts, setTexts] = useState({
@@ -45,6 +46,7 @@ const Update = ({ setOpenUpdate, user }) => {
         // Invalidate and refetch
         queryClient.invalidateQueries(["users"]);
         updateUser({ ...currentUser, ...texts });
+        addActivity({label: "Updated profile", moment: moment(), link: `/profile/${currentUser.id}`})
       },
     }
   );

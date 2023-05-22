@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./events.scss";
 import { FiChevronRight } from 'react-icons/fi';
 import { FiChevronLeft } from 'react-icons/fi';
 import moment from "moment";
 
-var totalValue = 10;
+var totalValue = 13;
 
 const Events = () => {
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[]);
 
   var random1 = 0;
   var random2 = 1;
@@ -46,9 +50,9 @@ const Events = () => {
 
   var months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 
-  const [day, setDay] = useState(moment().add(10, 'days').date())
-  const [month, setMonth] = useState(moment().add(10, 'days').month())
-  const [dayOfYear, setDayOfYear] = useState((moment().add(10, 'days').month() * 100) + moment().add(10, 'days').date())
+  const [day, setDay] = useState(moment().add(totalValue, 'days').date())
+  const [month, setMonth] = useState(moment().add(totalValue, 'days').month())
+  const [dayOfYear, setDayOfYear] = useState((moment().add(totalValue, 'days').month() * 100) + moment().add(10, 'days').date())
 
   function handleClick(value) {
     if (totalValue + value >= 0) {

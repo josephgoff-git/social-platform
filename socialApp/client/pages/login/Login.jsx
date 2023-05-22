@@ -2,8 +2,9 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import "./login.scss";
+import moment from "moment";
 
-const Login = () => {
+const Login = ({addActivity}) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -21,6 +22,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(inputs);
+      addActivity({label: "Logged in", moment: moment(), link: "/activity"})
       navigate("/")
     } catch (err) {
       setErr(err.response.data);

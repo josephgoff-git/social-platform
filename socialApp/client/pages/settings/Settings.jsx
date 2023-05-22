@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./settings.scss";
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { FiChevronRight } from 'react-icons/fi';
 import { FiChevronDown } from 'react-icons/fi';
+import moment from "moment";
 
-const Settings = ({settings, setSettings}) => {
+const Settings = ({settings, setSettings, addActivity}) => {
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[]);
 
   const [bodyChanged, setBodyChanged] = useState(0);
 
@@ -18,6 +23,43 @@ const Settings = ({settings, setSettings}) => {
       }
       setBodyChanged(bodyChanged + 1)
     }
+
+    if(item.label === "Push Notifications") {
+      var action = item.clicked? 'Disabled' : 'Enabled';
+      addActivity({label: action + " push notifications in settings", moment: moment(), link: "/settings"})
+    }
+    if(item.label === "Email Notifications") {
+      var action = item.clicked? 'Disabled' : 'Enabled';
+      addActivity({label: action + " email notifications in settings", moment: moment(), link: "/settings"})
+    }
+    if(item.label === "Share Location") {
+      var action = item.clicked? 'Disabled' : 'Enabled';
+      addActivity({label: action + " share location in settings", moment: moment(), link: "/settings"})
+    }
+    if(item.label === "Enable Shortcuts") {
+      var action = item.clicked? 'Disabled' : 'Enabled';
+      addActivity({label: action + " shortcuts in settings", moment: moment(), link: "/settings"})
+    }
+    if(item.label === "Allow Ads") {
+      var action = item.clicked? 'Disabled' : 'Enabled';
+      addActivity({label: action + " ads in settings", moment: moment(), link: "/settings"})
+    }
+    if(item.label === "Block Messages") {
+      var action = item.clicked? 'Disabled' : 'Enabled';
+      addActivity({label: action + " block messages in settings", moment: moment(), link: "/settings"})
+    }
+    if(item.label === "Restricted Mode") {
+      var action = item.clicked? 'Disabled' : 'Enabled';
+      addActivity({label: action + " restricted mode in settings", moment: moment(), link: "/settings"})
+    }
+  }
+
+  function handleLanguage(event) {
+    addActivity({label: "Set language to " + event.target.value + " in settings", moment: moment(), link: "/settings"})
+  }
+
+  function handleVisible(event) {
+    addActivity({label: "Set posts visible to: " + event.target.value + " in settings", moment: moment(), link: "/settings"})
   }
 
   return (
@@ -41,9 +83,9 @@ const Settings = ({settings, setSettings}) => {
                 {bodyChanged !== null? 
                 <div>
                   {item.label === "Language" ? <div className="button">
-                    <select name="language">
-                      <option>English         </option>
-                      <option>Spanish   </option>
+                    <select name="language" onChange={(event)=>{handleLanguage(event)}}>
+                      <option>English</option>
+                      <option>Spanish</option>
                       <option>French</option>
                       <option>German</option>
                       <option>Italian</option>
@@ -52,8 +94,8 @@ const Settings = ({settings, setSettings}) => {
                     <FiChevronDown fontSize={20} style={{marginBottom: "-3px", marginLeft: "-27px", userSelect: "none", zIndex: 10, paddingRight: "5px"}}/>
                     </div>: <></>}
                   {item.label === "Posts Visible To" ? <div className="button">
-                    <select name="posts">
-                      <option>Friends</option>
+                    <select name="posts" onChange={(event)=>{handleVisible(event)}}>
+                      <option>Followers</option>
                       <option>Anyone</option>
                       <option>None</option>
                     </select>

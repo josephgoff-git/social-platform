@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { makeRequest } from "../../axios";
 import { BsFillImageFill } from 'react-icons/bs';
 import { FiSend } from 'react-icons/fi';
+import moment from "moment";
 
 export var fill = "";
 export var barHeight = 25;
@@ -13,7 +14,7 @@ export function reRendered(value) {
   rendered = value
 };
 
-const MessageText = ({setBar}) => {
+const MessageText = ({setBar, receiverId, addActivity, friend}) => {
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
 
@@ -45,13 +46,13 @@ const MessageText = ({setBar}) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    (newPost) => {
-      return makeRequest.post("/posts", newPost);
+    (newMessage) => {
+      return makeRequest.post("/messages", newMessage);
     },
     {
       onSuccess: () => {
         // Invalidate and refetch
-        queryClient.invalidateQueries(["posts"]);
+        queryClient.invalidateQueries(["messages"]);
       },
     }
   );
@@ -60,9 +61,11 @@ const MessageText = ({setBar}) => {
     e.preventDefault();
     let imgUrl = "";
     if (file) imgUrl = await upload();
-    mutation.mutate({ desc, img: imgUrl });
+    if (file || desc !== "") {mutation.mutate({ desc, img: imgUrl, receiverId: receiverId})};
     setFile(null);
     setDesc("")
+    fill = "";
+    addActivity({label: "Sent message to " + friend.username + " " + friend.name, moment: moment(), link: "/messages", receiverId: friend.id})
   };
  
   useLayoutEffect(() => {
@@ -73,7 +76,7 @@ const MessageText = ({setBar}) => {
     var textarea = document.getElementById("textarea");
     var container = document.getElementById("container");
 
-    textarea.style.width = "calc(1/2 * (100% - 9px))"
+    textarea.style.width = "calc(0.5 * (100%))"
     textarea.style.height = "auto";
     if (textarea.scrollHeight === 44) {
       textarea.style.width = "calc(100% - 9px)"

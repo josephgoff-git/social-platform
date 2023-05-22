@@ -13,7 +13,7 @@ import { makeRequest } from "../../axios";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 
-const Post = ({ post }) => {
+const Post = ({ post, addActivity }) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -53,10 +53,18 @@ const Post = ({ post }) => {
 
   const handleLike = () => {
     mutation.mutate(data.includes(currentUser.id));
+    if (data.includes(currentUser.id)) {
+      addActivity({label: "Unliked " + post.username + " " + post.name + "'s post", moment: moment(), link: `/profile/${post.userId}`})
+    }
+    else {
+      addActivity({label: "Liked " + post.username + " " + post.name + "'s post", moment: moment(), link: `/profile/${post.userId}`})
+    }
   };
 
   const handleDelete = () => {
     deleteMutation.mutate(post.id);
+    addActivity({label: "Deleted post", moment: moment(), link: `/profile/${currentUser.id}`})
+
   };
 
   return (
@@ -64,7 +72,12 @@ const Post = ({ post }) => {
       <div className="container">
         <div className="user">
           <div className="userInfo">
+            <Link
+              to={`/profile/${post.userId}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <img src={"/upload/" + post.profilePic} alt="" />
+            </Link>
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}
@@ -79,6 +92,9 @@ const Post = ({ post }) => {
           {menuOpen && post.userId === currentUser.id && (
             <button onClick={handleDelete}>Delete</button>
           )}
+          {menuOpen && post.userId !== currentUser.id && (
+            <button>Save</button>
+          )}
         </div>
         <div className="content">
           {post.img? <img src={"/upload/" + post.img} alt="" /> : <img alt="" src="" style={{display: "none"}}/>}
@@ -90,7 +106,7 @@ const Post = ({ post }) => {
               "loading"
             ) : data.includes(currentUser.id) ? (
               <FavoriteOutlinedIcon
-                style={{ color: "red" }}
+                style={{ color: "themed('textColor')" }}
                 onClick={handleLike}
               />
             ) : (
@@ -107,7 +123,7 @@ const Post = ({ post }) => {
             <span>Share</span>
           </div>
         </div>
-        {commentOpen && <Comments postId={post.id} />}
+        {commentOpen && <Comments postId={post.id} addActivity={addActivity} post={post}/>}
       </div>
     </div>
   );

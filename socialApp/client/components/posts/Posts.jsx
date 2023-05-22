@@ -3,7 +3,7 @@ import "./posts.scss";
 import { useQuery } from 'react-query'
 import { makeRequest } from "../../axios";
 
-const Posts = ({userId}) => {
+const Posts = ({userId, addActivity}) => {
 
   const { isLoading, error, data } = useQuery(["posts", userId], () =>
     makeRequest.get("/posts?userId=" + userId).then((res)=> {
@@ -14,11 +14,11 @@ const Posts = ({userId}) => {
   return (
     <div className="posts">
       {error
-        ? "Something went wrong."
+        ? "Something went wrong..."
         : isLoading 
-        ? "loading..." 
+        ? "" 
         : data.map(post=>(
-          <Post post={post} key={post.id}/>
+          <Post post={post} key={post.id} addActivity={addActivity}/>
       ))}
     </div>
   );

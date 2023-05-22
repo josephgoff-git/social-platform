@@ -4,7 +4,7 @@ import Share from "../../components/share/Share"
 import "./home.scss"
 import { useEffect } from "react"
 
-const Home = () => {
+const Home = ({addActivity}) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -12,9 +12,9 @@ const Home = () => {
 
   return (
     <div className="home">
-      {/* <Stories/> */}
-      <Share/>
-      <Posts/>
+      {/* <Stories addActivity={addActivity}/> */}
+      <Share addActivity={addActivity}/>
+      <Posts addActivity={addActivity}/>
     </div>
   )
 }

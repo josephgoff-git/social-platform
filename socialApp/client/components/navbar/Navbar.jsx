@@ -14,6 +14,7 @@ import Dropdown from "../dropdown/Dropdown";
 import { clickedOutside } from "../dropdown/Dropdown.jsx";
 import { FiSend } from 'react-icons/fi';
 import { GoThreeBars } from 'react-icons/go'
+import moment from "moment";
 
 export var fill = "";
 export var searchResultsFill = [];
@@ -21,7 +22,7 @@ export var rendered = false;
 export function reRendered(value) {rendered = value};
 var wasBelow600 = false;
 
-const Navbar = ({mainBody, setMainBody, toggleLeft}) => {
+const Navbar = ({mainBody, setMainBody, toggleLeft, addActivity}) => {
   
   useEffect(() => {
     if (rendered) {
@@ -233,7 +234,7 @@ const Navbar = ({mainBody, setMainBody, toggleLeft}) => {
       </div>
 
       <div className="dropdown">
-        {dropdownOpen? <Dropdown page={source} user={data} isLoading={isLoading} mainBody={mainBody} setMainBody={setMainBody}/> : <></>}
+        {dropdownOpen? <Dropdown page={source} user={data} isLoading={isLoading} mainBody={mainBody} setMainBody={setMainBody} addActivity={addActivity}/> : <></>}
       </div>
 
       <div className="nav">
@@ -275,9 +276,9 @@ const Navbar = ({mainBody, setMainBody, toggleLeft}) => {
           </div>
           <div className="appearance" title="Appearance">
             {darkMode ? (
-              <WbSunnyOutlinedIcon onClick={toggle}/>
+              <WbSunnyOutlinedIcon onClick={()=>{toggle(); addActivity({label: "Changed theme to Light Mode", moment: moment(), link: "/activity"});}}/>
             ) : (
-              <DarkModeOutlinedIcon onClick={toggle}/>
+              <DarkModeOutlinedIcon onClick={()=>{toggle(); addActivity({label: "Changed theme to Dark Mode", moment: moment(), link: "/activity"});}}/>
             )}
           </div>
         </div>
@@ -296,9 +297,13 @@ const Navbar = ({mainBody, setMainBody, toggleLeft}) => {
               setButtons([button1, button2, button3, button4, button5, button6, input1]); 
           }}/></div>
           <div>{darkMode ? (
-              <WbSunnyOutlinedIcon id="button2" onClick={toggle} title="Appearance" className="small-screen"/>
+              <WbSunnyOutlinedIcon id="button2" onClick={()=>{
+                toggle(); addActivity({label: "Changed theme to Light Mode", moment: moment(), link: "/activity"});
+              }} title="Appearance" className="small-screen"/>
             ) : (
-              <DarkModeOutlinedIcon id="button3" onClick={toggle} title="Appearance" className="small-screen"/>
+              <DarkModeOutlinedIcon id="button3" onClick={()=>{
+                toggle(); addActivity({label: "Changed theme to Dark Mode", moment: moment(), link: "/activity"});
+              }} title="Appearance" className="small-screen"/>
             )}</div>
           <div><FaRegUser size={18} title="Account" id="button4"/></div>
           <div><FiSend size={20} title="Messages" id="button5"/></div>

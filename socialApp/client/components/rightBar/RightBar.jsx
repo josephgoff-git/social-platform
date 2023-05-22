@@ -4,9 +4,10 @@ import { makeRequest } from "../../axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 
-const RightBar = () => {
+const RightBar = ({addActivity}) => {
   const { currentUser } = useContext(AuthContext);
 
   const [followingIds, setFollowingIds] = useState([]);
@@ -35,9 +36,10 @@ const usersQuery = useQuery(["users"], () =>
     }
   );
 
-  function handleFollow(id) {
+  function handleFollow(id, first, last) {
     userId = id;
     mutation.mutate(followingIds.includes(currentUser.id));
+    addActivity({label: "Started following " + first + " " + last, moment: moment(), link: `/profile/${id}`})
   }
 
   useEffect(() => {
@@ -135,7 +137,7 @@ const usersQuery = useQuery(["users"], () =>
                   <span>{outsideUser.firstName} {outsideUser.lastName}</span>
                 </Link>
                 <div className="buttons">
-                  <button onClick={()=> {handleFollow(outsideUser.id)}}>
+                  <button onClick={()=> {handleFollow(outsideUser.id, outsideUser.firstName, outsideUser.lastName)}}>
                     {followingIds.includes(currentUser.id) 
                       ? "Unfollow"
                       : "Follow"

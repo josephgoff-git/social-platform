@@ -18,7 +18,7 @@ import Explore from "./pages/explore/Explore";
 import Friends from "./pages/friends/Friends";
 import Groups from "./pages/groups/Groups";
 import Market from "./pages/market/Market";
-import Messages from "./pages/message/Messages";
+import Messages from "./pages/messages/Messages";
 import Saved from "./pages/saved/Saved";
 import Settings from "./pages/settings/Settings";
 
@@ -33,6 +33,8 @@ import { HiOutlineStatusOnline } from 'react-icons/hi';
 import { BsPersonLinesFill } from 'react-icons/bs';
 import { Si1Password } from 'react-icons/si';
 import { IoTrashOutline } from 'react-icons/io5';
+
+import { useActivitiesStore } from "./activitiesStore";
 
 function App() {
   const {currentUser} = useContext(AuthContext);
@@ -129,6 +131,22 @@ function App() {
 
   const [notifications, setNotifications] = useState([])
 
+
+  const setActivities = useActivitiesStore((state) => state.setActivities);
+
+  var activities = []
+
+  const storedArray = localStorage.getItem("Latest Activity");
+  if (storedArray) {
+    activities = JSON.parse(storedArray);
+  }
+
+  function addActivity(object) {
+    activities.push(object);
+    setActivities(activities);
+    localStorage.setItem("Latest Activity", JSON.stringify(activities));
+  } 
+
   const [leftOpen, setLeftOpen] = useState(false);
 
   function toggleLeft() {
@@ -144,13 +162,13 @@ function App() {
     return (
       <QueryClientProvider client={queryClient} className="body">
         <div className={`theme-${darkMode ? "dark" : "light"}`} id="body">
-          <Navbar mainBody={mainBody} setMainBody={setMainBody} toggleLeft={toggleLeft}/>
+          <Navbar mainBody={mainBody} setMainBody={setMainBody} toggleLeft={toggleLeft} addActivity={addActivity}/>
           <div style={{ display: "flex" }}>
             <LeftBar leftOpen={leftOpen} setLeftOpen={setLeftOpen}/>
             <div style={{ flex: 6 }}>
               <Outlet />
             </div>
-            <RightBar />
+            <RightBar addActivity={addActivity}/>
           </div>
         </div>
       </QueryClientProvider>
@@ -176,15 +194,15 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home />,
+          element: <Home addActivity={addActivity}/>,
         },
         {
           path: "/profile/:id",
-          element: <Profile />,
+          element: <Profile addActivity={addActivity}/>,
         },
         {
           path: "/activity",
-          element: <Activity newNotifications={notifications}/>,
+          element: <Activity />,
         },
         {
           path: "/events",
@@ -192,7 +210,7 @@ function App() {
         },
         {
           path: "/explore",
-          element: <Explore />,
+          element: <Explore addActivity={addActivity}/>,
         },
         {
           path: "/friends",
@@ -200,7 +218,7 @@ function App() {
         },
         {
           path: "/groups",
-          element: <Groups groups={groups} setGroups={setGroups}/>,
+          element: <Groups groups={groups} setGroups={setGroups} addActivity={addActivity}/>,
         },
         {
           path: "/market",
@@ -208,25 +226,25 @@ function App() {
         },
         {
           path: "/messages",
-          element: <Messages/>,
+          element: <Messages addActivity={addActivity}/>,
         },
         {
           path: "/saved",
-          element: <Saved saved={saved} setSaved={setSaved}/>,
+          element: <Saved saved={saved} setSaved={setSaved} addActivity={addActivity}/>,
         },
         {
           path: "/settings",
-          element: <Settings settings={settings} setSettings={setSettings}/>,
+          element: <Settings settings={settings} setSettings={setSettings} addActivity={addActivity}/>,
         },
       ],
     },
     {
       path: "/login",
-      element: <Login />,
+      element: <Login addActivity={addActivity}/>,
     },
     {
       path: "/register",
-      element: <Register />,
+      element: <Register addActivity={addActivity}/>,
     },
   ]);
 

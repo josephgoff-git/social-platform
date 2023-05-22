@@ -6,15 +6,18 @@ import PinterestIcon from "@mui/icons-material/Pinterest";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import PlaceIcon from "@mui/icons-material/Place";
 import LanguageIcon from "@mui/icons-material/Language";
+import { FiSend } from "react-icons/fi"
 import Posts from "../../components/posts/Posts"
 import { useQuery, useMutation, useQueryClient} from 'react-query'
 import { makeRequest } from "../../axios";
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
+import Share from "../../components/share/Share";
+import moment from "moment";
 
-const Profile = () => {
+const Profile = ({addActivity}) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const { currentUser } = useContext(AuthContext)
 
@@ -31,10 +34,9 @@ const Profile = () => {
   makeRequest.get("/relationships?followedUserId=" + userId).then((res)=> {
     return res.data;
   })
-)
+  )
 
-
-const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation(
     (following) => {
@@ -51,7 +53,12 @@ const queryClient = useQueryClient();
 
   const handleFollow = () => {
       mutation.mutate(relationshipData.includes(currentUser.id))
-  }
+      if (relationshipData.includes(currentUser.id)) {
+        addActivity({label: "Unfollowed " + userData.username + " " + userData.name, moment: moment(), link: `/profile/${userId}`})
+      } else {
+        addActivity({label: "Started following " + userData.username + " " + userData.name, moment: moment(), link: `/profile/${userId}`})
+      }
+    }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -70,7 +77,17 @@ const queryClient = useQueryClient();
     <div className="profile">
       {userLoading || rIsLoading 
       ? "" 
-      : ( <> <div className="images">
+      : ( <> 
+      {userId !== currentUser.id ? 
+      <Link
+        to="/messages"
+        state={{receiverId: userId}} 
+        style={{textDecoration: "none"}} 
+      >
+        <FiSend fontSize={24} className="send"/>
+      </Link> 
+      : null }
+      <div className="images">
         <img
           src={"/upload/" + userData.coverPic}
           alt=""
@@ -137,9 +154,11 @@ const queryClient = useQueryClient();
           </div>
 
         </div>
-      <Posts userId={userId}/>
+      
+      {userId === currentUser.id? <Share addActivity={addActivity}/> : <></>}
+      <Posts userId={userId} addActivity={addActivity}/>
       </div></>)}
-      {userLoading? <></> : <div>{openUpdate && <Update setOpenUpdate={setOpenUpdate} user={userData}/>}</div>}
+      {userLoading? <></> : <div>{openUpdate && <Update addActivity={addActivity} setOpenUpdate={setOpenUpdate} user={userData}/>}</div>}
     </div>
   );
 };

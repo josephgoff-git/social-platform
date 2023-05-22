@@ -3,13 +3,13 @@
 .settings {
   @include themify($themes) {
     background-color: themed("bgSoft");
-    min-height: calc(100vh - 110px);
+    min-height: calc(100vh - 90px);
     width: 100%;
     height: calc(100% - 20px);
     scroll-behavior: smooth;
     overflow-y: scroll;
     padding-bottom: 20px;
-    @include mobile500{height: 100%;}
+  
     
     .title {
       font-weight: Bold;

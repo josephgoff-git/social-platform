@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import { makeRequest } from "../../axios";
 import moment from "moment";
 
-const Comments = ({ postId }) => {
+const Comments = ({ postId , addActivity, post}) => {
   const [desc, setDesc] = useState("");
   const { currentUser } = useContext(AuthContext);
 
@@ -40,6 +40,7 @@ const Comments = ({ postId }) => {
     e.preventDefault();
     mutation.mutate({ desc, postId });
     setDesc("");
+    addActivity({label: "Commented on " + post.username + " " + post.name + "'s post", moment: moment(), link: `/profile/${post.userId}`})
   };
 
   return (
@@ -58,11 +59,11 @@ const Comments = ({ postId }) => {
         ? "Something went wrong"
         : isLoading
         ? "loading"
-        : data.map((comment) => (
-            <div className="comment">
+        : data.map((comment, index) => (
+            <div className="comment" key={index}>
               <img src={"/upload/" + comment.profilePic} alt="" />
               <div className="info">
-                <span>{comment.name}</span>
+                <span>{comment.username} {comment.name}</span>
                 <p>{comment.desc}</p>
               </div>
               <span className="date">

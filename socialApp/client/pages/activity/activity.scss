@@ -9,12 +9,32 @@
     scroll-behavior: smooth;
     overflow-y: scroll;
     padding-bottom: 20px;
+    position: relative;
     
     .title {
       font-weight: Bold;
       font-size: 28px;
       color: themed("textColor");
       padding: 25px 6% 0 6%;
+    }
+
+    .clear {
+      position: absolute;
+      top: 29px;
+      right: 6%;
+      
+      button {
+        padding: 5px 8px;
+        background-color: transparent;
+        border: 1px solid themed("textColor");
+        color: themed("textColor");
+        font-size: 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        opacity: 0.8;
+
+        &:hover {opacity: 0.6;}
+      }
     }
 
     .container {

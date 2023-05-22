@@ -1,11 +1,14 @@
 import "./share.scss";
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState, useRef } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { makeRequest } from "../../axios";
 import { BsFillImageFill } from 'react-icons/bs';
 import { MdLocationPin } from 'react-icons/md';
 import { BsFillTagsFill } from 'react-icons/bs';
+import { Link } from "react-router-dom";
+import moment from "moment";
+// import { compressImage } from "../../compressImage.js"
 
 export var filePost = "";
 export var fill = "";
@@ -14,13 +17,14 @@ export function reRendered(value) {
   rendered = value
 };
 
-const Share = () => {
+const Share = ({addActivity}) => {
 
   const { currentUser } = useContext(AuthContext);
   
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
-
+  
+  const textareaRef = useRef(null);
   useEffect(() => {
     if (rendered) {
       filePost = "";
@@ -32,6 +36,9 @@ const Share = () => {
       }
       if (fill !== "") {
         setDesc(fill)
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+        }
       }
     }
   }, []); 
@@ -65,6 +72,11 @@ const Share = () => {
       const formData = new FormData();
       formData.append("file", file);
       const res = await makeRequest.post("/upload", formData);
+      
+      // const inputPath = formData;
+      // const outputPath = `/upload/Compressed/${formData}`;
+      // await compressImage(inputPath, outputPath); 
+
       return res.data;
     } catch (err) {
       console.log(err);
@@ -89,9 +101,12 @@ const Share = () => {
     e.preventDefault();
     let imgUrl = "";
     if (file) imgUrl = await upload();
-    mutation.mutate({ desc, img: imgUrl });
+    mutation.mutate({ desc, img: imgUrl })
     setDesc("");
     setFile(null);
+    filePost = "";
+    fill = "";
+    addActivity({label: "Created a new post", moment: moment(), link: `/profile/${currentUser.id}`})
   };
 
   // Added
@@ -130,9 +145,15 @@ const Share = () => {
       <div className="container">
         <div className="top">
           <div className="left">
-          {pLoading? <img src="" alt="" /> : <img src={"/upload/" + profileData.profilePic} alt="" />}
+            <Link
+             to={`/profile/${currentUser.id}`}
+             style={{ textDecoration: "none", color: "inherit" }}
+            >
+              {pLoading? <img src="" alt="" /> : <img src={"/upload/" + profileData.profilePic} alt="" />}
+            </Link>
              <textarea 
               id="textarea" 
+              ref={textareaRef} 
               placeholder={`What's on your mind ${currentUser.username}?`}
               onChange={(e)=>{
                 textarea_height(); 

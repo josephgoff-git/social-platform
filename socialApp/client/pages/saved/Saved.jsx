@@ -1,11 +1,18 @@
+import { useEffect } from "react";
 import "./saved.scss";
+import moment from "moment";
 
-const Saved = ({saved, setSaved}) => {
+const Saved = ({saved, setSaved, addActivity}) => {
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[]);
   
   function handleClick() {
     let collection = prompt("Enter New Collection Name:");
     if (collection !== null && collection !== "") {
       setSaved([...saved, {key: saved.length + 1, label: collection, img1: "", img2: "", img3: "", img4: ""}]);
+      addActivity({label: "Added a new saved collection called " + collection, moment: moment(), link: "/saved"})
     } 
   }
 
