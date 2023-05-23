@@ -6,6 +6,7 @@ import postRoutes from "./routes/posts.js";
 import messageRoutes from "./routes/messages.js";
 import commentRoutes from "./routes/comments.js";
 import likeRoutes from "./routes/likes.js";
+import storyRoutes from "./routes/stories.js";
 import relationshipRoutes from "./routes/relationships.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -44,6 +45,7 @@ app.use("/api/comments", commentRoutes)
 app.use("/api/likes", likeRoutes)
 app.use("/api/relationships", relationshipRoutes)
 app.use("/api/messages", messageRoutes)
+app.use("/api/stories", storyRoutes)
 
 app.listen(8800, ()=> {
     console.log("API working!")
