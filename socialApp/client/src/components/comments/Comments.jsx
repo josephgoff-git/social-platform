@@ -38,9 +38,11 @@ const Comments = ({ postId , addActivity, post}) => {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    mutation.mutate({ desc, postId });
+    if (desc !== "") {
+      mutation.mutate({ desc, postId });
+      addActivity({label: "Commented on " + post.username + " " + post.name + "'s post", moment: moment(), link: `/profile/${post.userId}`})
+    } 
     setDesc("");
-    addActivity({label: "Commented on " + post.username + " " + post.name + "'s post", moment: moment(), link: `/profile/${post.userId}`})
   };
 
   return (

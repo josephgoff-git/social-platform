@@ -16,13 +16,15 @@ import { FiSend } from 'react-icons/fi';
 import { GoThreeBars } from 'react-icons/go'
 import moment from "moment";
 
+import { useLeftStore } from "../../activitiesStore";
+
 export var fill = "";
 export var searchResultsFill = [];
 export var rendered = false;
 export function reRendered(value) {rendered = value};
 var wasBelow600 = false;
 
-const Navbar = ({mainBody, setMainBody, toggleLeft, addActivity}) => {
+const Navbar = ({mainBody, setMainBody, addActivity}) => {
   
   useEffect(() => {
     if (rendered) {
@@ -156,8 +158,12 @@ const Navbar = ({mainBody, setMainBody, toggleLeft, addActivity}) => {
     }
   }, [])  
 
+  var left = useLeftStore((state) => state.left);
+  const setLeft = useLeftStore((state) => state.setLeft);
+
   function handleClick2() {
-    toggleLeft()
+    if (left) {setLeft(false)}
+    else {setLeft(true)}
   }
 
   // Search Bar
@@ -240,7 +246,7 @@ const Navbar = ({mainBody, setMainBody, toggleLeft, addActivity}) => {
       <div className="nav">
 
         <div className="left">
-          <GoThreeBars onClick={handleClick2} fontSize={25} id="hamburger" style={{display: "block", marginRight: "15px"}}/>
+          <GoThreeBars onClick={()=>{handleClick2()}} fontSize={25} id="hamburger" style={{display: "block", marginRight: "15px"}}/>
           <Link to="/" style={{ textDecoration: "none" }}>
             <span>lamasocial</span>
           </Link>

@@ -64,7 +64,6 @@ const Post = ({ post, addActivity }) => {
   const handleDelete = () => {
     deleteMutation.mutate(post.id);
     addActivity({label: "Deleted post", moment: moment(), link: `/profile/${currentUser.id}`})
-
   };
 
   return (
@@ -93,7 +92,7 @@ const Post = ({ post, addActivity }) => {
             <button onClick={handleDelete}>Delete</button>
           )}
           {menuOpen && post.userId !== currentUser.id && (
-            <button>Save</button>
+            <button onClick={()=>{setMenuOpen(false)}}>Save</button>
           )}
         </div>
         <div className="content">

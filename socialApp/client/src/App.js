@@ -44,40 +44,13 @@ function App() {
   const queryClient = new QueryClient()
 
   const [mainBody, setMainBody] = useState([
-    [
-      {icon: <RxLockClosed fontSize={20}/>,  label: "Private Account", value: "1", type: "option", clicked: false},
-      {icon: <HiOutlineStatusOnline fontSize={24}/>,  label: "Show Online Status", value: "2", type: "option", clicked: false},
-      {icon: <ShareOutlinedIcon/>,  label: "Allow Sharing", value: "3", type: "option", clicked: false},
-      {icon: <BsPersonLinesFill fontSize={20}/>,  label: "Edit Profile", value: "4", type: "click"},
-      {icon: <Si1Password fontSize={20}/>,  label: "Change Password", value: "5", type: "click"},
-      {icon: <IoTrashOutline fontSize={20}/>, label: "Delete Account", value: "6", type: "option"}
-    ],[
-      {label: "Alex", value: "1", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Ryan", value: "2", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Haley", value: "3", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "John", value: "4", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Connor", value: "5", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Sarah", value: "6", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Alex", value: "7", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Ryan", value: "8", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Haley", value: "9", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "John", value: "10", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Connor", value: "11", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"},
-      {label: "Sarah", value: "12", type: "click", lastMessage: "Hey are you free tomorrow? I thought we could grab a coffee!", type: "click"}
-    ],[
-      {value: "1", type: "click", notification: "Joseph Goff liked your photoooo photo phtoooo ophpoen"},
-      {value: "2", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "3", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "4", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "5", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "6", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "7", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "8", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "9", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "10", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "11", type: "click", notification: "Joseph Goff liked your photo"},
-      {value: "12", type: "click", notification: "Joseph Goff liked your photo"}
-    ]])
+     {icon: <RxLockClosed fontSize={20}/>,  label: "Private Account", type: "option", clicked: false},
+      {icon: <HiOutlineStatusOnline fontSize={24}/>,  label: "Show Online Status", type: "option", clicked: false},
+      {icon: <ShareOutlinedIcon/>,  label: "Allow Sharing", type: "option", clicked: false},
+      {icon: <BsPersonLinesFill fontSize={20}/>,  label: "Edit Profile", type: "click"},
+      {icon: <Si1Password fontSize={20}/>,  label: "Change Password", type: "click"},
+      {icon: <IoTrashOutline fontSize={20}/>, label: "Delete Account", type: "option"}
+    ])
 
   const [settings, setSettings]  = useState([
     {key: 0, label: "Language", key: "English", type: "dropdown", clicked: "false"},
@@ -129,17 +102,11 @@ function App() {
     {key: 4, label: "Morning Workout", members: 13, img: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29ya291dCUyMGdyb3VwfGVufDB8fDB8fHww&auto=format&fit=crop&w=900&q=60"},
   ])
 
-  const [notifications, setNotifications] = useState([])
-
 
   const setActivities = useActivitiesStore((state) => state.setActivities);
-
   var activities = []
-
   const storedArray = localStorage.getItem("Latest Activity");
-  if (storedArray) {
-    activities = JSON.parse(storedArray);
-  }
+  if (storedArray) {activities = JSON.parse(storedArray);}
 
   function addActivity(object) {
     activities.push(object);
@@ -147,24 +114,14 @@ function App() {
     localStorage.setItem("Latest Activity", JSON.stringify(activities));
   } 
 
-  const [leftOpen, setLeftOpen] = useState(false);
-
-  function toggleLeft() {
-    setLeftOpen(!leftOpen);
-  }
-
-  useEffect(()=>{
-    if (window.innerWidth < 480) {setLeftOpen(false)}
-    else {setLeftOpen(true)}
-  }, [])
 
   const Layout = () => {
     return (
       <QueryClientProvider client={queryClient} className="body">
         <div className={`theme-${darkMode ? "dark" : "light"}`} id="body">
-          <Navbar mainBody={mainBody} setMainBody={setMainBody} toggleLeft={toggleLeft} addActivity={addActivity}/>
+          <Navbar mainBody={mainBody} setMainBody={setMainBody} addActivity={addActivity}/>
           <div style={{ display: "flex" }}>
-            <LeftBar leftOpen={leftOpen} setLeftOpen={setLeftOpen}/>
+            <LeftBar />
             <div style={{ flex: 6 }}>
               <Outlet />
             </div>

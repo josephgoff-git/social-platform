@@ -8,7 +8,9 @@
     border-radius: 20px;
     background-color: themed("bg");
     color: themed("textColor");
-    margin-bottom: 23px;
+    margin: 0 90px 23px 90px;
+    @include tablet{margin: 0 70px 23px 70px;}
+    @include mobile2{margin: 0 20px 23px 20px;}
 
     .container {
       padding: 20px;
@@ -123,6 +125,7 @@
             background-color: themed("textColor");
             opacity: 0.97;
             border-radius: 3px;
+            margin-left: 5px;
           }
 
           button:hover {

@@ -67,16 +67,10 @@ const Share = ({addActivity}) => {
   const [titles, setTitles] = useState([addImage, location, tags])
 
   const upload = async () => { 
-    
     try {
       const formData = new FormData();
       formData.append("file", file);
       const res = await makeRequest.post("/upload", formData);
-      
-      // const inputPath = formData;
-      // const outputPath = `/upload/Compressed/${formData}`;
-      // await compressImage(inputPath, outputPath); 
-
       return res.data;
     } catch (err) {
       console.log(err);
@@ -101,12 +95,14 @@ const Share = ({addActivity}) => {
     e.preventDefault();
     let imgUrl = "";
     if (file) imgUrl = await upload();
-    mutation.mutate({ desc, img: imgUrl })
+    if (file || desc !== "") {
+      mutation.mutate({ desc, img: imgUrl })
+      addActivity({label: "Created a new post", moment: moment(), link: `/profile/${currentUser.id}`})
+    }
     setDesc("");
     setFile(null);
     filePost = "";
     fill = "";
-    addActivity({label: "Created a new post", moment: moment(), link: `/profile/${currentUser.id}`})
   };
 
   // Added

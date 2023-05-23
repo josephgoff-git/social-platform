@@ -10,9 +10,13 @@ const Home = ({addActivity}) => {
     window.scrollTo(0, 0);
   }, []);
 
+  function setOverflow(input) {
+    var home = document.getElementById("home");
+  }
+
   return (
-    <div className="home">
-      {/* <Stories addActivity={addActivity}/> */}
+    <div className="home" id="home" >
+      <Stories addActivity={addActivity}/>
       <Share addActivity={addActivity}/>
       <Posts addActivity={addActivity}/>
     </div>

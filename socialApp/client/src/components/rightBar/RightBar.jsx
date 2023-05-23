@@ -14,12 +14,12 @@ const RightBar = ({addActivity}) => {
   const [users, setUsers] = useState([]);
 
   const relationshipsQuery = useQuery(["relationships"], () =>
-  makeRequest.get("/relationships/find").then((res) => res.data)
-);
+    makeRequest.get("/relationships/find").then((res) => res.data)
+  );
 
-const usersQuery = useQuery(["users"], () =>
-  makeRequest.get("/users/get").then((res) => res.data)
-);
+  const usersQuery = useQuery(["users"], () =>
+    makeRequest.get("/users/get").then((res) => res.data)
+  );
 
   const queryClient = useQueryClient();
   var userId;

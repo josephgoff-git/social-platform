@@ -17,6 +17,7 @@
         margin-right: 75px;
         max-height: 450px;
         overflow: scroll;
+        overscroll-behavior: contain;
 
         @include tablet{
             margin-right: 15px;
@@ -102,11 +103,17 @@
                     }
 
                     .page3 {
+                        margin-top: -3px;
+                        margin-left: -3px;
                         font-size: 12px;
                         white-space: nowrap; 
                         overflow-x: hidden;
                         text-overflow: ellipsis;
                         max-width: 160px;
+
+                        span {
+                            font-weight: 600;
+                        }
                     }
                 }
             }
@@ -120,6 +127,10 @@
                     color: themed("textColorSoft2")
                 }
             }
-        }
+
+            .date {
+                margin-top: -3px;
+            }
+        }   
     }
 }

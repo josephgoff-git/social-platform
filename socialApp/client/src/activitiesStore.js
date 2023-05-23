@@ -8,3 +8,9 @@ export const useActivitiesStore = create((set) => ({
       set(() => ({ activities: [] }));
     },
   }));
+
+  export const useLeftStore = create((set) => ({
+    left: false,
+    setLeft: (newLeft) => set({ left: newLeft }),
+  }));
+

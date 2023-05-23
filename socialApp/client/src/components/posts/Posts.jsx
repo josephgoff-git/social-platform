@@ -6,10 +6,19 @@ import { makeRequest } from "../../axios";
 const Posts = ({userId, addActivity}) => {
 
   const { isLoading, error, data } = useQuery(["posts", userId], () =>
-    makeRequest.get("/posts?userId=" + userId).then((res)=> {
-      return res.data;
-    })
-  )
+  makeRequest.get("/posts?userId=" + userId).then((res) => {
+    const returnData = [];
+    const postIds = [];
+    for (let i = 0; i < res.data.length; i++) {
+      const post = res.data[i];
+      if (!postIds.includes(post.id)) {
+        returnData.push(post);
+        postIds.push(post.id);
+      }
+    }
+    return returnData;
+  })
+);
 
   return (
     <div className="posts">

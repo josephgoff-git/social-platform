@@ -10,24 +10,16 @@
     overflow: scroll;
     background-color: themed("bg");
     color: themed("textColor");
-    min-width: 170px;
+    flex: none;
+    width: 160px;
 
-    @include tablet{
-      min-width: 140px;
-    }
+    @include mobile1 {width: 0;}
 
-    @include mobile1{
-      flex: none;
-      width: 73px;
-      min-width: 73px;
-    }
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    &::-webkit-scrollbar {display: none;}
 
     .container {
       padding: 20px;
+      user-select: none;
 
       hr {
         margin: 20px 0px;
@@ -63,6 +55,7 @@
             height: 30px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
           }
 
           span {

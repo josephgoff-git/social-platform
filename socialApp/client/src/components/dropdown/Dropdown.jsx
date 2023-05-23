@@ -22,13 +22,6 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
   })
   );
 
-  //Display image
-  const { isLoading: pLoading, data: profileData } = useQuery(["user"], () =>
-  makeRequest.get("/users/find/" + currentUser.id).then((res)=> {
-     return res.data;
-  })
-  )
-
   //Get all messages
   const { isLoading: mLoading, error: mError, data: mData } = useQuery(["messages"], () =>
     makeRequest.get("/messages?userId=" + userId).then((res)=> {
@@ -36,6 +29,28 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
       return filteredMessages;
     })
   )
+
+  const [followersIds, setFollowersIds] = useState([]);
+  const [users, setUsers] = useState([]);
+  const relationshipsQuery = useQuery(["relationships"], () =>
+    makeRequest.get("/relationships/find").then((res) => res.data)
+  );
+
+  useEffect(() => {
+    if (relationshipsQuery.data) {
+      const ids1 = relationshipsQuery.data
+        .filter((item) => item.followedUserId === currentUser.id)
+        .map((item) => item.followerUserId);
+      setFollowersIds(ids1);
+    }
+  }, [currentUser.id, relationshipsQuery.data]);
+
+  useEffect(() => {
+    if (usersQuery.data) {
+      setUsers(usersQuery.data);
+    }
+  }, [usersQuery.data]);
+
   
   var messageData = mData? mData : [];
   var messageDropArray = [];
@@ -89,13 +104,11 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
 
 
   const [bodyChanged, setBodyChanged] = useState(0);
-  function handleClick(item) {
+  function handleClick(item, index) {
     if (item.type === "option") {
-      if (mainBody[page-1][item.value - 1]) {
-        var newMainBody = mainBody
-        newMainBody[page-1][item.value - 1].clicked = !newMainBody[page-1][item.value - 1].clicked;
-        setMainBody(newMainBody)
-      }
+      var newMainBody = mainBody
+      newMainBody[index].clicked = !newMainBody[index].clicked;
+      setMainBody(newMainBody)
       setBodyChanged(bodyChanged + 1)
     } 
     if (item.label === "Private Account") {
@@ -110,9 +123,6 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
       var action = item.clicked? "Enabled" : "Disabled";
       addActivity({label: action +  " sharing from the dropdown menu", moment: moment(), link: "/activity"})
     }
-  }
- 
-  function handleAlert(item) {
     if (item.label === "Delete Account") {
       if (window.confirm(`Delete ${currentUser.username} ${currentUser.name}'s account?`)) {
         deleteMutation.mutate(currentUser.id);
@@ -121,6 +131,7 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
       } 
     }
   }
+
 
   const deleteMutation = useMutation(
     (id) => {
@@ -134,6 +145,27 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
     }
   );
 
+  if (relationshipsQuery.isLoading || usersQuery.isLoading) {
+    return <div></div>;
+  }
+
+  if (relationshipsQuery.isError || usersQuery.isError) {
+    return <div></div>;
+  }
+
+  var users2 = users.filter((item) => item.id !== currentUser.id)
+  // notifications
+  var count = 0;
+  var displayNotifications = []
+  var times = ["2m", "3m", "5m", "10m", "12m", "21m", "30m", " 56m", "1h", "3h", "6h", "12h", "1d","2d", "4d"]
+  var event = [" liked your post", " commented on your post", " shared your post"]
+  while (count < 15) {
+    if (users2.length > 0) {
+      var person = users2[Math.floor(Math.random() * users2.length)]
+      displayNotifications.push({userId: person.id, userPic: person.profilePic, name: person.username + " " + person.name, notification: event[Math.floor(Math.random() * 3)], time: times[count]})
+    }
+    count += 1;
+  }
 
   return (
     <div className="dropdown-wrapper" ref={ref}>
@@ -141,22 +173,18 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
         {title}
       </div>
       <hr />
-      {page !== 2 ?
+      {page === 1 ?
       <div className="body">
-        {mainBody[page-1] && mainBody[page-1].map((item) => {
+        {mainBody && mainBody.map((item, index) => {
           let link = "/";
           let update = false;
-          if (page === 1) {
-            if (item.label === "Edit Profile" || item.label === "Change Password") {
-              update = true;  
-              link = `/profile/${currentUser.id}`
-            } 
-          } else if (page === 3) {
-            clickedOutside = true;
-          }
+          if (item.label === "Edit Profile" || item.label === "Change Password") {
+            update = true;  
+            link = `/profile/${currentUser.id}`
+          } 
 
           return (
-          <div key={item.value} onClick={() => {clickedOutside = true; handleClick(item)}}>
+          <div key={index} onClick={() => {clickedOutside = true; handleClick(item, index)}}>
           {item.type==="click" ? (
             <Link 
             to={link}
@@ -168,21 +196,19 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
               <div className="item" >
                 <div className="left">
                   <div className="icon">
-                    {pLoading? <></> : page === 1? <div>{item.icon}</div> : <></>}
-                    {pLoading? <></> : page === 3? <img src={"/upload/" + profileData.profilePic} alt="" /> : <></>}
+                    <div>{item.icon}</div>
                   </div>
                   <div className="label">
-                    {page === 1 ? <div>{item.label}</div> : <></>}
-                    {page === 3 ? <div className="page3">{item.notification}</div> : <></>}
+                    <div>{item.label}</div>
                   </div>
                 </div>
                 <div className="right">
-                  {page === 3 ? <div className="text">5m</div> : <FiChevronRight fontSize={18}/>}
+                  <FiChevronRight fontSize={18}/>
                 </div>
               </div>
             </Link>
             ):(
-            <div className="item" onClick={()=>{handleAlert(item)}}>
+            <div className="item">
               <div className="left">
                 <div className="icon">
                   {item.icon}
@@ -204,7 +230,9 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
           )
         })} 
       </div>
-      : 
+      : <></>}
+
+      {page === 2?
       <div className="body">
         {messageDropArray && messageDropArray.map((item, index) => {
           clickedOutside = true;
@@ -249,8 +277,39 @@ function Dropdown({page, userId, isLoading, mainBody, setMainBody, addActivity})
           )
         })} 
       </div>
-      
-      }
+      : <></>}
+
+      {page === 3 ? 
+      <div className="body">
+        {displayNotifications.length > 0 && displayNotifications.map((item, index) => {
+          clickedOutside = true;
+          
+          return (
+          <div key={index} onClick={() => {clickedOutside = true}}>
+            <Link 
+            to={`/profile/${item.userId}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className="item" >
+                <div className="left">
+                  <div className="icon">
+                   <img src={"/upload/" + item.userPic} alt="" />
+                  </div>
+                  <div className="label">
+                    <div className="page3"><span>{item.name}</span>{item.notification}</div> 
+                  </div>
+                </div>
+                <div className="right date">
+                  <div className="text">{item.time}</div>
+                </div>
+              </div>
+          </Link>
+        </div>
+        )
+        })} 
+      </div>
+      : <></>}
+
     </div>
   )
 }
